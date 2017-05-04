@@ -1,4 +1,7 @@
+Utils = require('./utils').Utils;
+
 var ObjectID = require('mongodb').ObjectID;
+var utils = new Utils();
 
 // Constructor of an instance of MongoDB
 CollectionDriver = function(db) {
@@ -48,9 +51,36 @@ CollectionDriver.prototype.get = function(collectionName, id, callback) {
   });
 };
 
-/*
-CollectionDriver.prototype.addPath = function(path, callback) {
-  this.getCollection('paths', function(error, path, the_collection) {
+CollectionDriver.prototype.getPoiByCategory = function(collectionName, category, callback) {
+  this.getCollection(collectionName, function(error, the_collection) {
+    if (error) callback(error);
+    else {
+      the_collection.find({'properties.categoria':category}).toArray(function(error,results) {
+        if (error) callback(error);
+        else callback(null, results);
+      })
+    }
+  });
+};
+
+CollectionDriver.prototype.getPoiByParams = function(collectionName, coordinates, category, radius, callback) {
+  this.getPoiByCategory(collectionName, category, function(error, the_collection) {
+    if (error) callback(error);
+    else {
+      the_collection.forEach(function(element) {
+        if (utils.calculateDistance(coordinates[0],coordinates[1],element.coordinates[1],element.coordinates[0])>radius) {
+          the_collection = the_collection.filter(function(item) { 
+            return item !== element
+          });
+        }
+      });
+      callback(null, the_collection);
+    }
+  });
+};
+
+/*CollectionDriver.prototype.getPoiByParams = function(coordinates, type, radius, callback) {
+  this.getPoiByType('poi', function(error, type, the_collection) {
     if (error) callback(error);
     else {
       // Obtained the collection via getCollection,

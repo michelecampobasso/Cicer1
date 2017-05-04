@@ -3,6 +3,7 @@
 var http = require('http');
 var express = require('express');
 var path = require('path');
+var bodyParser = require('body-parser');
 
 // Importing MongoClient and Server objects from the module CollectionDriver (note ',' instead of ';')
 MongoClient = require('mongodb').MongoClient,
@@ -12,7 +13,10 @@ CollectionDriver = require('./collectionDriver').CollectionDriver;
 // Express is a routing middleware. Instead of using http, it helps offering methods for
 // directly handling REST calls and provides appropriate callbacks for every case.
 var app = express();
+
 app.set('port', 3000);
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 /* IMPORT AND DECLARATION AREA END */
 
@@ -62,12 +66,8 @@ app.get('/:collection', function(req, res) {
   collectionDriver.findAll(req.params.collection, function(error, objs) {
     if (error) { res.send(400, error); }
     else {
-      if (req.accepts('html')) { // Checking if sender accepts html...
-        res.render('data',{objects: objs, collection: req.params.collection}); // Collection is rendered as table by default
-      } else { // ...or a JSON file
-        res.set('Content-Type','application/json');
-        res.send(200, objs);
-      }
+      res.set('Content-Type','application/json');
+      res.send(200, objs);
     }
   });
 });
@@ -93,11 +93,21 @@ app.get('/:collection/:entity', function(req, res) {
     res.send(400, {error: 'bad url', url: req.url});
   }
 });
+
 /*
-app.post('/path'), function(req, res) {
-  var path = req.pois;
-  if (path) {
-    collectionDriver.addPath(path, function(error, objs) {
+ * Given a collection name (poi), the array of the coordinates, 
+ * the category required and a radius in km, it returns a list of PoI.
+ *
+ * Error codes:
+ *     -400: Missing body.
+ *     -500: Something broke in the server. Bad story.
+ */
+
+app.post('/path', function(req, res) {
+  var body = req.body;
+  if (body) {
+    // Please, check if params are ok
+    collectionDriver.getPoiByParams(body.collection_name, body.coordinates, body.category, body.radius, function(error, objs) {
       if (error) { res.send(500, error); }
       else { res.send(200, objs); }
     });
@@ -105,7 +115,7 @@ app.post('/path'), function(req, res) {
     res.send(400, {error: 'bad url', url: req.url});
   }
 });
-*/
+
 // Default "catch-all" non available requests
 app.use(function(req, res) {
   res.render('404', {url:req.url});

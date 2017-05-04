@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "body-parser": "^1.17.1",
     "bson-ext": "^1.0.5",
     "express": "3.3.4",
     "jade": "1.11.0",
