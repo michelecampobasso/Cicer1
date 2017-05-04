@@ -96,7 +96,7 @@ app.get('/:collection/:entity', function(req, res) {
 
 /*
  * Given a collection name (poi), the array of the coordinates, 
- * the category required and a radius in km, it returns a list of PoI.
+ * the array of the categories required and a radius in km, it returns a list of PoI.
  *
  * Error codes:
  *     -400: Missing body.
@@ -107,7 +107,7 @@ app.post('/path', function(req, res) {
   var body = req.body;
   if (body) {
     // Please, check if params are ok
-    collectionDriver.getPoiByParams(body.collection_name, body.coordinates, body.category, body.radius, function(error, objs) {
+    collectionDriver.getPoiByParams(body.collection_name, body.coordinates, body.categories, body.radius, function(error, objs) {
       if (error) { res.send(500, error); }
       else { res.send(200, objs); }
     });

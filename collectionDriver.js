@@ -51,11 +51,11 @@ CollectionDriver.prototype.get = function(collectionName, id, callback) {
   });
 };
 
-CollectionDriver.prototype.getPoiByCategory = function(collectionName, category, callback) {
+CollectionDriver.prototype.getPoiByCategories = function(collectionName, categories, callback) {
   this.getCollection(collectionName, function(error, the_collection) {
     if (error) callback(error);
     else {
-      the_collection.find({'properties.categoria':category}).toArray(function(error,results) {
+      the_collection.find({'properties.categoria': {$in :categories}}).toArray(function(error,results) {
         if (error) callback(error);
         else callback(null, results);
       })
@@ -63,8 +63,8 @@ CollectionDriver.prototype.getPoiByCategory = function(collectionName, category,
   });
 };
 
-CollectionDriver.prototype.getPoiByParams = function(collectionName, coordinates, category, radius, callback) {
-  this.getPoiByCategory(collectionName, category, function(error, the_collection) {
+CollectionDriver.prototype.getPoiByParams = function(collectionName, coordinates, categories, radius, callback) {
+  this.getPoiByCategories(collectionName, categories, function(error, the_collection) {
     if (error) callback(error);
     else {
       the_collection.forEach(function(element) {
