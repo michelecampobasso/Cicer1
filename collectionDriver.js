@@ -85,6 +85,18 @@ CollectionDriver.prototype.getPoiByParams = function(collectionName, coordinates
   });
 };
 
+CollectionDriver.prototype.getCities = function(collectionName, city, callback) {
+  this.getCollection(collectionName, function(error, the_collection) {
+    if (error) callback(error);
+    else {
+      var regex = '/^'+city+'/i';
+      the_collection.distinct('properties.comune', {'properties.comune': new RegExp('^' + city , 'i') }, function(error, cities) {
+        callback(null, cities);
+      });
+    }
+  })};
+
+
 /*CollectionDriver.prototype.getPoiByParams = function(coordinates, type, radius, callback) {
   this.getPoiByType('poi', function(error, type, the_collection) {
     if (error) callback(error);

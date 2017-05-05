@@ -94,6 +94,22 @@ app.get('/:collection/:entity', function(req, res) {
   }
 });
 
+
+app.get('/city/:collection/:city_prefix', function(req, res) {
+  var params = req.params;
+  var city = params.city_prefix;
+  var collection = params.collection;
+  if (city && collection) {
+    collectionDriver.getCities(collection, city, function(error, objs) {
+      if (error) { res.send(400, error); }
+      else { res.send(200, objs); }
+    });
+  } else {
+    res.send(400, {error: 'bad url', url: req.url});
+  }
+});
+
+
 /*
  * Given a collection name (poi), the array of the coordinates, 
  * the array of the categories required, a radius in km and the
