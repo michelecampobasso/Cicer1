@@ -96,23 +96,28 @@ app.get('/:collection/:entity', function(req, res) {
 
 /*
  * Given a collection name (poi), the array of the coordinates, 
- * the array of the categories required and a radius in km, it returns a list of PoI.
+ * the array of the categories required, a radius in km and the
+ * maximum number of results, it returns a list of PoI.
  *
  * Error codes:
  *     -400: Missing body.
  *     -500: Something broke in the server. Bad story.
  */
 
-app.post('/path', function(req, res) {
-  var body = req.body;
-  if (body) {
-    // Please, check if params are ok
-    collectionDriver.getPoiByParams(body.collection_name, body.coordinates, body.categories, body.radius, function(error, objs) {
-      if (error) { res.send(500, error); }
-      else { res.send(200, objs); }
-    });
-  } else {
-    res.send(400, {error: 'bad url', url: req.url});
+app.post('/poi', function(req, res) {
+  try {
+    var body = req.body;
+    if (body) {
+      // Please, check if params are ok
+      collectionDriver.getPoiByParams(body.collection_name, body.coordinates, body.categories, body.radius, body.max_results, function(error, objs) {
+        if (error) { res.send(500, error); }
+        else { res.send(200, objs); }
+      });
+    } else {
+      res.send(400, {error: 'bad url', url: req.url});
+    }
+  } catch (e) {
+    console.log(e);
   }
 });
 

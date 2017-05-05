@@ -63,18 +63,24 @@ CollectionDriver.prototype.getPoiByCategories = function(collectionName, categor
   });
 };
 
-CollectionDriver.prototype.getPoiByParams = function(collectionName, coordinates, categories, radius, callback) {
+CollectionDriver.prototype.getPoiByParams = function(collectionName, coordinates, categories, radius, maxResults, callback) {
   this.getPoiByCategories(collectionName, categories, function(error, the_collection) {
     if (error) callback(error);
     else {
       the_collection.forEach(function(element) {
-        if (utils.calculateDistance(coordinates[0],coordinates[1],element.coordinates[1],element.coordinates[0])>radius) {
+        // Coordinates are inverted since in the DB they're set this way...
+        var calculatedRadius = utils.calculateDistance(coordinates[0],coordinates[1],element.coordinates[1],element.coordinates[0]); 
+        if (calculatedRadius>radius) {
           the_collection = the_collection.filter(function(item) { 
             return item !== element
           });
         }
+        else {
+          element.distance = calculatedRadius;
+        } 
       });
-      callback(null, the_collection);
+      the_collection.sort(function(a, b) {return a.distance-b.distance});
+      callback(null, the_collection.slice(0,maxResults));
     }
   });
 };
