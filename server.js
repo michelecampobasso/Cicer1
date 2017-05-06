@@ -18,6 +18,14 @@ app.set('port', 3000);
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+// enable CORS
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+
 /* IMPORT AND DECLARATION AREA END */
 
 /* INITIALIZING AND INSTANCING OBJECTS BEGIN */
@@ -94,6 +102,9 @@ app.get('/:collection/:entity', function(req, res) {
   }
 });
 
+/*
+ * Given a prefix (case insensitive), it returns an array with all the cities that match with it.
+ */
 
 app.get('/city/:collection/:city_prefix', function(req, res) {
   var params = req.params;
