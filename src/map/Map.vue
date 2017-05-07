@@ -33,7 +33,7 @@ export default {
                   "_id" : "1",
                   "id" : "19039",
                   "properties" : {
-                      "nome" : "Chiesa della Vergine",
+                      "nome" : "Chiesa della niente",
                       "provincia" : "Bologna",
                       "comune" : "MONZUNO",
                       "frazione" : "Campagne",
@@ -135,7 +135,22 @@ export default {
           } else {
             window.alert('Directions request failed due to ' + status);
           }
-        });       
+        });
+     
+     //Cerco per ciascun punto se esiste la pagina di wikipedia
+     for(var i = 0; i < this.points.length; i++){
+       this.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + this.points[i].properties.nome + ' &inprop=url&intestactions=&origin=*').then(response => {
+          var json = JSON.parse(JSON.stringify(response.body));
+          var id = Object.keys(response.body.query.pages)[0];
+          //Se id è a -1 la pagina non esiste
+          if(id != -1){
+            var object =  json["query"]["pages"][id];
+            var url = object["canonicalurl"];
+            var extract = object["extract"]);
+          }
+       });
+
+    }       
   }
 
 
