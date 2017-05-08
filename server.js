@@ -141,7 +141,33 @@ app.post('/poi', function(req, res) {
         else { res.send(200, objs); }
       });
     } else {
-      res.send(400, {error: 'bad url', url: req.url});
+      res.send(400, {error: 'missing body', url: req.url});
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+/*
+ * Given a collection name (poi) and an array of IDs, 
+ * it updates their popularity.
+ *
+ * Error codes:
+ *     -400: Missing body.
+ *     -500: Something broke in the server. Bad story.
+ */
+
+app.post('/popularity', function(req, res) {
+  try {
+    var body = req.body;
+    if (body) {
+      // Please, check if params are ok
+      collectionDriver.updatePopularity(body.ids, body.collection_name, function(error, fine) {
+        if (error) { res.send(500, error); }
+        else { res.send(200, {}); }
+      });
+    } else {
+      res.send(400, {error: 'missing body', url: req.url});
     }
   } catch (e) {
     console.log(e);
