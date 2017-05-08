@@ -34,6 +34,22 @@ CollectionDriver.prototype.findAll = function(collectionName, callback) {
   });
 };
 
+// Definition of a DB helper that allows to read all the not updated by maps API documents yet.
+/*CollectionDriver.prototype.findAll = function(collectionName, callback) {
+  this.getCollection(collectionName, function(error, the_collection) {
+    // If the DB is reachable
+    if (error) callback(error);
+    // 'the_callback' is kinda an iterator that can be used to match objects through the use of find()
+    else {
+      // Finally, toArray organizes the results into an array and passes it to the callback
+      the_collection.find({'added':false}).toArray(function(error, results) {
+        if (error) callback(error);
+        else callback(null, results);
+      });
+    }
+  });
+};*/
+
 // Definition of a DB helper that obtains a single item from a collection by its _id.
 CollectionDriver.prototype.get = function(collectionName, id, callback) {
   this.getCollection(collectionName, function(error, the_collection) {
@@ -51,6 +67,7 @@ CollectionDriver.prototype.get = function(collectionName, id, callback) {
   });
 };
 
+// Definition of a DB helper that allows get all PoI by an array of categories
 CollectionDriver.prototype.getPoiByCategories = function(collectionName, categories, callback) {
   this.getCollection(collectionName, function(error, the_collection) {
     if (error) callback(error);
@@ -63,6 +80,7 @@ CollectionDriver.prototype.getPoiByCategories = function(collectionName, categor
   });
 };
 
+// Definition of a DB helper that allows to read all the documents that match all the parameters
 CollectionDriver.prototype.getPoiByParams = function(collectionName, coordinates, categories, radius, maxResults, callback) {
   this.getPoiByCategories(collectionName, categories, function(error, the_collection) {
     if (error) callback(error);
@@ -85,6 +103,7 @@ CollectionDriver.prototype.getPoiByParams = function(collectionName, coordinates
   });
 };
 
+// Definition of a DB helper that allows to get all the cities that begin with a specified prefix
 CollectionDriver.prototype.getCities = function(collectionName, city, callback) {
   this.getCollection(collectionName, function(error, the_collection) {
     if (error) callback(error);
@@ -95,6 +114,21 @@ CollectionDriver.prototype.getCities = function(collectionName, city, callback) 
       });
     }
   })};
+
+// Definition of a DB helper that allows to insert a rating for a specified PoI
+CollectionDriver.prototype.insertRatings = function(objectId, rating, callback) {
+  console.log("objectid "+objectId+"rating "+rating);
+  this.db.collection('poi').updateOne(
+    { "id": objectId },
+    {
+      $set: { "rating": rating, "added": true }
+    },
+  function(err, results) {
+    //console.log(results);
+    if (!err) { callback(null, results); }
+    else { callback(err, null); }
+  });
+};
 
 
 /*CollectionDriver.prototype.getPoiByParams = function(coordinates, type, radius, callback) {
