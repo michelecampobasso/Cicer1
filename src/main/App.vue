@@ -2,7 +2,7 @@
   <div id="app">
     <router-link to="/search">Search</router-link>
     <router-link to="/map">Maps</router-link>
-     <router-view></router-view>
+     <router-view :poilist="poilist2"></router-view>
   </div>
 </template>
 
@@ -11,6 +11,9 @@ export default {
   name: 'app',
   data () {
     return {
+      poilist2: {
+        list: [],
+      }
     }
   }
 }
