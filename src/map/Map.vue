@@ -9,7 +9,7 @@
     
   <div id="list">
     <ul>
-    <li v-for="item in points">
+    <li v-for="item in poilist.list">
       {{item.properties.nome}} - {{item.properties.provincia}}  
     </li>   
     </ul>
@@ -19,14 +19,14 @@
 </template>
 <script>
 export default {
+  props: ['poilist'],  
   name: 'main',
   data () {
     return {
-        points : []
+        // points : []
     }
   },
   methods: {
-    
     initMap: function(){
       
     var point1 = {
@@ -86,11 +86,12 @@ export default {
                   ]   
               };          
 
-    this.points = [point1, point2, point3];
+    // this.poilist.list = [point1, point2, point3];
     
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 17,
-        center: new google.maps.LatLng(44.1400338,12.2412768),
+        // center: new google.maps.LatLng(44.1400338,12.2412768),
+        center: new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]),
         mapTypeId: 'terrain'
     });
     
@@ -104,9 +105,9 @@ export default {
     control.style.display = "block";
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
 
-    var firstPoint = new google.maps.LatLng(this.points[0].coordinates[1], this.points[0].coordinates[0]);
-    for (var i = 0; i < this.points.length; i++) {
-        var latLng = new google.maps.LatLng(this.points[i].coordinates[1], this.points[i].coordinates[0]);
+    var firstPoint = new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]);
+    for (var i = 0; i < this.poilist.list.length; i++) {
+        var latLng = new google.maps.LatLng(this.poilist.list[i].coordinates[1], this.poilist.list[i].coordinates[0]);
         var marker = new google.maps.Marker({
             position: latLng,
             map: map
@@ -114,9 +115,9 @@ export default {
     }
 
     var waypoints = []
-    for(var i = 1; i < this.points.length; i++){
+    for(var i = 1; i < this.poilist.list.length; i++){
       waypoints.push({
-          location: new google.maps.LatLng(this.points[i].coordinates[1], this.points[i].coordinates[0]),
+          location: new google.maps.LatLng(this.poilist.list[i].coordinates[1], this.poilist.list[i].coordinates[0]),
           stopover: true
       });
     }
@@ -138,25 +139,21 @@ export default {
         });
      
      //Cerco per ciascun punto se esiste la pagina di wikipedia
-     for(var i = 0; i < this.points.length; i++){
-       this.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + this.points[i].properties.nome + ' &inprop=url&intestactions=&origin=*').then(response => {
+     for(var i = 0; i < this.poilist.list.length; i++){
+       this.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + this.poilist.list[i].properties.nome + ' &inprop=url&intestactions=&origin=*').then(response => {
           var json = JSON.parse(JSON.stringify(response.body));
           var id = Object.keys(response.body.query.pages)[0];
           //Se id è a -1 la pagina non esiste
           if(id != -1){
             var object =  json["query"]["pages"][id];
             var url = object["canonicalurl"];
-            var extract = object["extract"]);
+            var extract = object["extract"];
           }
        });
-
-    }       
-  }
-
-
-
-
-    
+     }
+  } 
+  },
+  computed: function() {
   },
   mounted() {
     this.initMap()

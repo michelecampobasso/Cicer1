@@ -31,7 +31,7 @@
           <label for="checkbox"></span> {{ category.cat_emoji }} ({{category.cat_string}})</label>
         </div>
         <span @click="searchPOI">CERCAAAAAAAAA</span>
-        <router-link v-if="city!=''" to="/map">Cerca!</router-link>              
+        <router-link to="/map"><span @click="searchPOI"> Cerca 🔎 </span></router-link>              
         <router-link to="/search/manual"><span @click="sendEvent"> Fa a manoni 2 👏 </span></router-link>
         
       {{poilist}}
@@ -47,7 +47,7 @@
       data() {
         return {
           msg: 'I am getting ready to fire an event.',
-          use_gps: true,
+          use_gps: false,
           location_msg: "Usa la tua posizione",
           position: {
             longitude: "",
@@ -118,23 +118,23 @@
       methods: {
         fetchGeolocation: function() {
           if (this.use_gps == true) {
-            this.position.longitude = 11.332179
-            this.position.latitude = 44.497449 
-            this.reverseCoord(this.position)
-            this.location_msg = ""
+            // this.position.longitude = 11.332179
+            // this.position.latitude = 44.497449 
+            // this.reverseCoord(this.position)
+            // this.location_msg = ""
 
-            // if(navigator.geolocation){
-            //   this.location_msg = "(ti sto cercando...)"
-            //   navigator.geolocation.getCurrentPosition(position => {
-            //     this.position.longitude = position.coords.longitude
-            //     this.position.latitude = position.coords.latitude
+            if(navigator.geolocation){
+              this.location_msg = "(ti sto cercando...)"
+              navigator.geolocation.getCurrentPosition(position => {
+                this.position.longitude = position.coords.longitude
+                this.position.latitude = position.coords.latitude
                 
-            //     this.reverseCoord(this.position)
-            //     this.location_msg = ""
-            //   })
-            // } else {
-            //   this.location_msg = "(funzionalità non supportata)"
-            // }
+                this.reverseCoord(this.position)
+                this.location_msg = ""
+              })
+            } else {
+              this.location_msg = "(funzionalità non supportata)"
+            }
           } else {
             this.position.longitude = ""
             this.position.latitude = ""
@@ -183,23 +183,19 @@
         selectCity: function(city_string) {
           this.city_selected = city_string
           this.city_suggestions = []
-          var url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + this.city
+          var url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + city_string
           this.$http.get(url).then(response => {
+            console.log(response)
             // console.log(response.body.results[0])
             this.position.longitude = response.body.results[0].geometry.location.lng
             this.position.latitude = response.body.results[0].geometry.location.lat
+            console.log(this.position)
           }, response => {
+            console.log("mica trovato " + this.city)            
           });
         },
         searchPOI: function() {
           var url = "http://138.68.79.145:3000/poi"
-          // var post = {
-          //             "collection_name":"poi",
-          //             "categories": [ "Strutture romane", "Teatri e cinema" ],
-          //             "coordinates": [ 44.155460263191415, 11.795208823209418 ],
-          //             "radius": 225,
-          //             "max_results": 5
-          //             }
           var post = {}
           post.collection_name = "poi"
           post.categories = []
@@ -208,10 +204,17 @@
               post.categories.push(this.categories[i].cat_string)
             }
           }
+
+          if (!this.use_gps) {
+            console.log("arrivato qua")
+            this.selectCity(this.city_selected)
+          }
           post.coordinates = [this.position.latitude, this.position.longitude]
-          post.radius = 225
+          console.log(post.coordinates)
+          post.radius = 1000
           post.max_results = 5
           // console.log(post)
+          console.log(post)
           this.$http.post(url, post, {
             headers: {
                 'Content-Type': 'application/json'
@@ -221,9 +224,11 @@
             // this.welcome = response.body
             // console.log(this.welcome)
             this.poilist.list = response.body
-            this.$poilist.list = response.body
-            this.$router.push("/search/manual/")
-          })
+            console.log(this.poilist)
+            // this.$poilist.list = response.body
+            this.$router.push("/map")
+          }, response => {
+          });
         }
       },
       watch: {
