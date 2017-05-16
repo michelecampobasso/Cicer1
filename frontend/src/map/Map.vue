@@ -23,7 +23,6 @@ export default {
   name: 'main',
   data () {
     return {
-        // points : []
     }
   },
   methods: {

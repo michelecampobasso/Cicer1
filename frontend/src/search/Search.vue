@@ -30,10 +30,9 @@
           <input type="checkbox" id="checkbox" v-model="category.is_selected">
           <label for="checkbox"></span> {{ category.cat_emoji }} ({{category.cat_string}})</label>
         </div>
-        <span @click="searchPOI">CERCAAAAAAAAA</span>
-        <router-link to="/map"><span @click="searchPOI"> Cerca 🔎 </span></router-link>              
-        <router-link to="/search/manual"><span @click="sendEvent"> Fa a manoni 2 👏 </span></router-link>
-        
+        <span @click="searchPOI('/map')"> Cerca 🔎 </span>
+        <span @click="searchPOI('/search/manual')">Manoni 👇</span>
+        <br>
       {{poilist}}
       </div>
     </template>
@@ -163,10 +162,6 @@
           }, response => {
           });
         },
-        sendEvent: function() {
-          this.$poilist.list = "era spiaggia ma vabè"
-          this.$router.push("/search/manual/")
-        },
         autocomplete: _.debounce(
           function() {
             var url = "http://138.68.79.145:3000/city/poi/" + this.city
@@ -194,7 +189,7 @@
             console.log("mica trovato " + this.city)            
           });
         },
-        searchPOI: function() {
+        searchPOI: function(address) {
           var url = "http://138.68.79.145:3000/poi"
           var post = {}
           post.collection_name = "poi"
@@ -220,16 +215,11 @@
                 'Content-Type': 'application/json'
             }
           }).then(response => {
-            console.log(response)
-            // this.welcome = response.body
-            // console.log(this.welcome)
             this.poilist.list = response.body
-            console.log(this.poilist)
-            // this.$poilist.list = response.body
-            this.$router.push("/map")
+            this.$router.push(address)
           }, response => {
           });
-        }
+        },
       },
       watch: {
         city: function(val) {

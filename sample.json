@@ -1,0 +1,112 @@
+[
+    {
+        "_id": "590a37db44367d32f45dbee8",
+        "id": "19229",
+        "properties": {
+            "nome": "Chiesa di San Zenone",
+            "provincia": "Forlì-Cesena",
+            "comune": "CESENA",
+            "frazione": "",
+            "tipologie_cronologie": "Chiesa (XVIII sec.) - Campanile (XIV sec.)",
+            "categoria": "Edifici religiosi",
+            "tipologia": "Chiesa",
+            "eta": "Età Moderna"
+        },
+        "coordinates": [
+            12.24567207670312,
+            44.13930988838961
+        ],
+        "rating": 4.5,
+        "added": true,
+        "popularity": 13,
+        "distance": 0.07091439621993614
+    },
+    {
+        "_id": "590a37db44367d32f45dc2f1",
+        "id": "9407",
+        "properties": {
+            "nome": "Palazzo Ghini",
+            "provincia": "Forlì-Cesena",
+            "comune": "CESENA",
+            "frazione": "",
+            "tipologie_cronologie": "Palazzo (XVIII sec.)",
+            "categoria": "Strutture rinascimentali e tardo-rinascimentali",
+            "tipologia": "Palazzo",
+            "eta": "Età Moderna"
+        },
+        "coordinates": [
+            12.245819939398885,
+            44.13881812842663
+        ],
+        "rating": 4,
+        "added": true,
+        "popularity": 21,
+        "distance": 0.10388894454572713
+    },
+    {
+        "_id": "590a37db44367d32f45dc243",
+        "id": "8814",
+        "properties": {
+            "nome": "Palazzo Romagnoli",
+            "provincia": "Forlì-Cesena",
+            "comune": "CESENA",
+            "frazione": "",
+            "tipologie_cronologie": "Palazzo (XVIII sec.) - Parco/Giardino (XVIII sec.)",
+            "categoria": "Strutture rinascimentali e tardo-rinascimentali",
+            "tipologia": "Palazzo",
+            "eta": "Età Moderna"
+        },
+        "coordinates": [
+            12.244427730371555,
+            44.140438122926255
+        ],
+        "rating": 5,
+        "added": true,
+        "popularity": 12,
+        "distance": 0.18250894916695895
+    },
+    {
+        "_id": "590a37db44367d32f45dc268",
+        "id": "8948",
+        "properties": {
+            "nome": "Ex casa Bufalini e resti della chiesa di S. Francesco",
+            "provincia": "Forlì-Cesena",
+            "comune": "CESENA",
+            "frazione": "",
+            "tipologie_cronologie": "Palazzo (XVIII sec.) - Chiesa (XVIII sec.)",
+            "categoria": "Strutture rinascimentali e tardo-rinascimentali",
+            "tipologia": "Palazzo",
+            "eta": "Età Moderna"
+        },
+        "coordinates": [
+            12.244557447098583,
+            44.13836891359621
+        ],
+        "rating": 0,
+        "added": true,
+        "popularity": 0,
+        "distance": 0.20592700028387673
+    },
+    {
+        "_id": "590a37db44367d32f45dbb22",
+        "id": "14051",
+        "properties": {
+            "nome": "Palazzo Marcosanti Masini",
+            "provincia": "Forlì-Cesena",
+            "comune": "CESENA",
+            "frazione": "",
+            "tipologie_cronologie": "Palazzo (XVIII sec.)",
+            "categoria": "Strutture rinascimentali e tardo-rinascimentali",
+            "tipologia": "Palazzo",
+            "eta": "Età Moderna"
+        },
+        "coordinates": [
+            12.245100568519362,
+            44.13798667859592
+        ],
+        "rating": 5,
+        "added": true,
+        "popularity": 17,
+        "distance": 0.21258919955722066
+    }
+]
