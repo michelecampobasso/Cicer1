@@ -147,7 +147,6 @@
           this.picked_duration = duration.id
         },
         selectCategory: function(category_id) {
-          console.log(category_id)
           this.categories[category_id].is_selected = !this.categories[category_id].is_selected
         },
         fetchGeolocation: function() {

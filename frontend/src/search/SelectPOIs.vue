@@ -1,23 +1,30 @@
 <template>
   <div id="selectpois">
     <div class="pois-container">
-      <div v-for="el in newpoilist">
-        <div class="name">
-          {{el.properties.nome}}
+      <div v-for="poi in pois">
+        <div class="poi" @click="clickOnPoi(poi.id_cicer1)">
+          <div v-bind:class="[poi.is_selected ? 'selected' : '', '']">
+            <div class="left">
+              <div class="name">
+                {{poi.properties.nome}}
+              </div>
+              <span class="type">
+                {{poi.properties.tipologia}}
+              </span>
+            </div>
+            <div class="right">
+              <div class="rating">
+                {{poi.rating}} ⭐️
+              </div>
+              <div class="popularity">
+                {{poi.popularity}} ✔️
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="type">
-          {{el.properties.tipologia}}
-        </div>
-        <div class="rating">
-          {{el.rating}}
-        </div>
-        <div class="popularity">
-          {{el.popularity}}
-        </div>
-        <input type="checkbox" id="checkbox" v-model="el.isSelected">
       </div>
       <div class="cta-buttons-container">
-        <div  @click="goToMap()" class="cta-button">🔎 Cerca!</div>
+        <div  @click="goToMap()" class="cta-button">🔎 Vai alla mappa</div>
       </div>
     </div>
   </div>
@@ -29,31 +36,37 @@ export default {
   name: 'selectpois',
   data () {
     return {
-      newpoilist: this.poilist.list
+      pois: this.poilist.list
     }
   },
   methods: {
     addFields: function() {
-      console.log("fata roba")
-      console.log(this.newpoilist.length)
-      for (var i = 0; i < this.newpoilist.length; i++) {
-        this.newpoilist[i].isSelected = true
+      for (var i = 0; i < this.pois.length; i++) {
+        this.pois[i].is_selected = false
+        this.pois[i].id_cicer1 = i
       } 
+    },
+    clickOnPoi: function(poi_id) {
+      console.log(poi_id, this.pois[poi_id].is_selected, !this.pois[poi_id].is_selected)
+      this.pois[poi_id].is_selected = !this.pois[poi_id].is_selected
     },
     goToMap: function() {
       this.poilist.list = []
-      for (var i = 0; i < this.newpoilist.length; i++) {
-        if (this.newpoilist[i].isSelected) {
-            this.poilist.list.push(this.newpoilist[i])
+      for (var i = 0; i < this.pois.length; i++) {
+        if (this.pois[i].is_selected) {
+            this.poilist.list.push(this.pois[i])
         }
       }
-      console.log(this.poilist.list.length)
       this.$router.push("/map")
     }
   },
+  watch: {
+  },
   created() {
+    this.cose="super vaffanculo"
+    console.log("created")
     this.addFields()
-  }
+  } 
 }
 </script>
 

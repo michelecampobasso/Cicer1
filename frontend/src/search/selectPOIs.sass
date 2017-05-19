@@ -1,12 +1,55 @@
-#selectPOIs
-    
-    .name
-        background-color: pink
+#selectpois
+    margin: 30px auto
 
-    .type
+    .pois-container
+        max-width: 450px
+        margin: 0 auto
+        
+        .poi
+            background-color: #fff
+            border: 1px solid #000
+            padding: 10px 15px
+            text-align: start
+        
+            .selected
+                background-color: #d2d2d2
+        
+            .left
+                float: left
+                .name
+                    text-align: start
+                    text-transform: uppercase
+                    width: 340px
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    
+                .type
+                    position: relative
+                    font-size: 14px
+                    border-radius: 4px
+                    padding: 4px 8px
+                    text-transform: capitalize
+                    border: 1px solid #4ad7d8
 
-    .rating
+            .right
+                .rating
+                    text-align: end
 
-    .popularity
+                .popularity
+                    text-align: end
 
-    .selected
+    .cta-buttons-container
+        margin-top: 20px
+        .cta-button
+            cursor: pointer
+            padding: 10px 20px
+            border-radius: 10px
+            background-color: #f2f2f2
+            margin: 5px auto
+            width: 400px
+            &:hover
+                background-color: #e2e2e2
+            &:active
+                background-color: #d2d2d2
+
