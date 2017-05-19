@@ -1,31 +1,32 @@
 <template>
-  <div id="manoni">
-  <div v-for="el in newpoilist">
-    <div class="name">
-      {{el.properties.nome}}
+  <div id="selectpois">
+    <div class="pois-container">
+      <div v-for="el in newpoilist">
+        <div class="name">
+          {{el.properties.nome}}
+        </div>
+        <div class="type">
+          {{el.properties.tipologia}}
+        </div>
+        <div class="rating">
+          {{el.rating}}
+        </div>
+        <div class="popularity">
+          {{el.popularity}}
+        </div>
+        <input type="checkbox" id="checkbox" v-model="el.isSelected">
+      </div>
+      <div class="cta-buttons-container">
+        <div  @click="goToMap()" class="cta-button">🔎 Cerca!</div>
+      </div>
     </div>
-    <div class="type">
-      {{el.properties.tipologia}}
-    </div>
-    <div class="rating">
-      {{el.rating}}
-    </div>
-    <div class="popularity">
-      {{el.popularity}}
-    </div>
-    <input type="checkbox" id="checkbox" v-model="el.isSelected">
-  </div>
-  <br>
-  <span @click="goToMap()">Daje de mappa 🗺</span>
-  <br>
-  {{ poilist.list }}
   </div>
 </template>
 
 <script>
 export default {
   props: ['poilist'],
-  name: 'manoni',
+  name: 'selectpois',
   data () {
     return {
       newpoilist: this.poilist.list
@@ -55,3 +56,5 @@ export default {
   }
 }
 </script>
+
+<style src="./selectpois.sass" lang="sass"/>

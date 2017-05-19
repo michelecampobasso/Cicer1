@@ -6,17 +6,12 @@ import VueMaterial from 'vue-material'
 
 import App from './App.vue'
 import Search from '../search/Search.vue'
-import Manoni from '../search/Manoni.vue'
+import Manoni from '../search/SelectPOIs.vue'
 import Results from '../map/Map.vue'
 
 Vue.use(VueMaterial)
 Vue.use(VueRouter)
 Vue.use(VueResource)
-
-
-// alternatvely use this to import modules:
-// const Search = resolve => require(['../search/Search.vue'], resolve)
-// const Results = resolve => require(['../map/Map.vue'], resolve)
 
 const routes = [
   { path: '/', component: Search },

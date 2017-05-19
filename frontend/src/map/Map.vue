@@ -159,34 +159,5 @@ export default {
   }
 }
 </script>
-<style>
-#main {
-  position : absolute;
-}
-  #container {
-    position : relative;
-    left: 25%;
-    z-index: 5;
-    background-color: #fff;
-    padding: 5px;
-    border: 1px solid #999;
-    padding-left: 10px;
-  }
-  #map {
-    width : 1300px;
-    height : 800px;
-    position : relative;
-  }
 
-  #instructions {
-    font-family: 'Roboto','sans-serif';
-    line-height: 30px;
-    padding-left: 10px;
-  }
-
-  #list {
-    width : 1300 px;
-    height : 1000 px;
-    position : relative;
-  }
-</style>
+<style src="./map.sass" lang="sass"/>
