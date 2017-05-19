@@ -2,27 +2,16 @@ import Vue from 'vue'
 
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
+import VueMaterial from 'vue-material'
 
 import App from './App.vue'
 import Search from '../search/Search.vue'
-import Manoni from '../search/Manoni.vue'
+import Manoni from '../search/SelectPOIs.vue'
 import Results from '../map/Map.vue'
 
+Vue.use(VueMaterial)
 Vue.use(VueRouter)
-Vue.use(VueResource);
-
-Object.defineProperty(Vue.prototype, '$poilist', {
-  get() {
-    return this.$root.poilist;
-  }
-});
-
-// Vue.component('search', Search)
-// Vue.component('results', Results)
-
-// alternatvely use this to import modules:
-// const Search = resolve => require(['../search/Search.vue'], resolve)
-// const Results = resolve => require(['../map/Map.vue'], resolve)
+Vue.use(VueResource)
 
 const routes = [
   { path: '/', component: Search },
@@ -32,22 +21,12 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
-
-// Vue.http.headers.common['Access-Control-Request-Origin'] = '*'
 
 new Vue({
   router,
   el: '#app',
-  data: {
-    // bus: bus, // Here we bind our event bus to our $root Vue model.
-    poilist: {
-      list: []
-    }
-  },
-  // http: {
-  //   headers: { 'Access-Control-Allow-Origin': true }
-  // },
   render: h => h(App)
 }).$mount('#app')

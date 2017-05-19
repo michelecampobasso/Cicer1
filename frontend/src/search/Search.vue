@@ -1,40 +1,48 @@
     <template>
       <div id="search">
-        <input type="checkbox" id="checkbox" v-model="use_gps" @change="fetchGeolocation()">
-        <label for="checkbox">Usa la tua posizione <span>{{ location_msg }}</span> </label>
+        <div class="gps" @click="fetchGeolocation()">
+             {{ location_msg }}
+          </md-checkbox>
+        </div>
         
-        <br>
+        <div class="city-input">
+          <md-input-container>
+            <label>Città:</label>
+            <md-input class="city-input-form" v-model="city" placeholder="Seleziona la città"></md-input>
+          </md-input-container> 
+          <div class="city-suggestions">
+            <ul>
+              <li v-for="city_suggestion in city_suggestions" v-bind:value="city_suggestion" @click="selectCity(city_suggestion)">
+                {{ city_suggestion }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="trip-length-container">
+          <span class="section_title">Quanto tempo hai a disposizione?</span>
+          <div v-for="duration in durations">
+            <div v-bind:class="[duration.is_selected ? 'selected' : '', 'length']" @click="selectTripLength(duration)">
+              {{duration.string}}
+            </div>
+          </div>
+        </div>
 
-        <span>Seleziona la città:</span>    
-        <div>
-          <input v-model="city" placeholder="Città">
-          <ul>
-            <li v-for="city_suggestion in city_suggestions" v-bind:value="city_suggestion" @click="selectCity(city_suggestion)">
-              {{ city_suggestion }}
-            </li>
-          </ul>
+        <div class="category-container">
+          <span class="section_title">Cosa ti interessa di più?</span>
+          <div v-for="category in categories">
+            <div v-bind:class="[category.is_selected ? 'selected' : '', 'category']" @click="selectCategory(category.cat_id)">
+                <span v-if="category.is_selected">✔</span> &nbsp;{{category.cat_string_short}} {{category.cat_emoji}} 
+              </md-checkbox>
+            </div>
+          </div>
         </div>
-        
-        <br>
-        
-        <span>Durata del percorso:</span>
-        <div v-for="duration in durations">
-          <input type="radio" :id="duration.id" :value="duration.id" v-model="picked_duration">
-          <label :for="duration.id">{{duration.value}}</label>
-        </div>
-        
-        <br>
 
-        <span>Categorie dei POI:</span>
-        <div v-for="category in categories">
-          <input type="checkbox" id="checkbox" v-model="category.is_selected">
-          <label for="checkbox"></span> {{ category.cat_emoji }} ({{category.cat_string}})</label>
+        <div class="cta-buttons-container" v-if="city_selected != '' || city_with_gps != ''">
+          <div  @click="searchPOI('/map')" class="cta-button">🔎 Cerca!</div>
+          <div @click="searchPOI('/search/manual')" class="cta-button">👇 Filtra a mano</div>
         </div>
-        <span @click="searchPOI">CERCAAAAAAAAA</span>
-        <router-link to="/map"><span @click="searchPOI"> Cerca 🔎 </span></router-link>              
-        <router-link to="/search/manual"><span @click="sendEvent"> Fa a manoni 2 👏 </span></router-link>
-        
-      {{poilist}}
+        <br>
       </div>
     </template>
 
@@ -46,96 +54,124 @@
       props: ['poilist'],
       data() {
         return {
-          msg: 'I am getting ready to fire an event.',
           use_gps: false,
-          location_msg: "Usa la tua posizione",
+          location_msg: "🌏 Usa la tua posizione",
+          city: "",
+          city_with_gps: "",
+          city_selected: "",
+          city_suggestions: [],
+          picked_duration: 1,          
           position: {
             longitude: "",
             latitude: ""
           },
-          city: "",
-          city_suggestions: [],
-          city_selected: "",
-          city_with_gps: "",
           categories: [
             {
               cat_id: 0,
               cat_string: "Edifici religiosi",
+              cat_string_short: "CHIESE",
               cat_emoji: "⛪",
               is_selected: true
             },
             {
               cat_id: 1,
               cat_string: "Parchi e piazze",
+              cat_string_short: "ALL'APERTO",
               cat_emoji: "⛲",
               is_selected: true
             },
             {
               cat_id: 2,
               cat_string: "Elemento architettonico puntuale",
+              cat_string_short: "TORRI",
               cat_emoji: "🗼",
               is_selected: true
             },
             {
               cat_id: 3,
               cat_string: "Teatri e cinema",
+              cat_string_short: "LUDICI",
               cat_emoji: "📽",
               is_selected: true
             },
             {
               cat_id: 4,
               cat_string: "Strutture rinascimentali e tardo-rinascimentali",
+              cat_string_short: "RINASCIMENTALI",
               cat_emoji: "🎨",
               is_selected: true
             },
             {
               cat_id: 5,
               cat_string: "Strutture medievali",
+              cat_string_short: "MEDIEVALI",
               cat_emoji: "🏰",
               is_selected: true
             },
             {
               cat_id: 6,
               cat_string: "Strutture romane",
+              cat_string_short: "ROMANI",
               cat_emoji: "🗿",
               is_selected: true
             }
           ],
           durations: [
             {
-              id: "oneday",
-              value: "1 GG"
+              id: 0,
+              string: "Poco",
+              value: 5,
+              is_selected: false
             },
             {
-              id: "halfaday",
-              value: "1/2 GG"
+              id: 1,
+              string: "Abbastanza",
+              value: 10,
+              is_selected: true
+            },
+            {
+              id: 2,
+              string: "Molto",
+              value: 15,
+              is_selected: false
             }
-          ],
-          picked_duration: "oneday",
-          msg: "niente"
+          ]
         }
       },
       methods: {
+        selectTripLength: function(duration) {
+          for (var i = 0; i < this.durations.length; i++) {
+              this.durations[i].is_selected = false
+          }
+          this.durations[duration.id].is_selected = true
+          this.picked_duration = duration.id
+        },
+        selectCategory: function(category_id) {
+          console.log(category_id)
+          this.categories[category_id].is_selected = !this.categories[category_id].is_selected
+        },
         fetchGeolocation: function() {
+          this.use_gps = !this.use_gps
           if (this.use_gps == true) {
             // this.position.longitude = 11.332179
             // this.position.latitude = 44.497449 
             // this.reverseCoord(this.position)
             // this.location_msg = ""
-
             if(navigator.geolocation){
-              this.location_msg = "(ti sto cercando...)"
+              this.location_msg = "🔎 Ti sto cercando..."
               navigator.geolocation.getCurrentPosition(position => {
+                this.location_msg = "👌 Sto usando la tua posizione"
                 this.position.longitude = position.coords.longitude
                 this.position.latitude = position.coords.latitude
-                
                 this.reverseCoord(this.position)
-                this.location_msg = ""
-              })
+              }, position => {
+                  this.location_msg = "C'è stato un problema"
+              }, {maximumAge:100000, timeout:10000, enableHighAccuracy:true})
             } else {
-              this.location_msg = "(funzionalità non supportata)"
+              this.location_msg = "😐 Funzionalità non supportata"
             }
           } else {
+            this.location_msg = "🌏 Usa la tua posizione"
             this.position.longitude = ""
             this.position.latitude = ""
           }
@@ -162,10 +198,6 @@
             })
           }, response => {
           });
-        },
-        sendEvent: function() {
-          this.$poilist.list = "era spiaggia ma vabè"
-          this.$router.push("/search/manual/")
         },
         autocomplete: _.debounce(
           function() {
@@ -194,7 +226,7 @@
             console.log("mica trovato " + this.city)            
           });
         },
-        searchPOI: function() {
+        searchPOI: function(address) {
           var url = "http://138.68.79.145:3000/poi"
           var post = {}
           post.collection_name = "poi"
@@ -212,7 +244,7 @@
           post.coordinates = [this.position.latitude, this.position.longitude]
           console.log(post.coordinates)
           post.radius = 1000
-          post.max_results = 5
+          post.max_results = this.durations[this.picked_duration].value
           // console.log(post)
           console.log(post)
           this.$http.post(url, post, {
@@ -220,16 +252,11 @@
                 'Content-Type': 'application/json'
             }
           }).then(response => {
-            console.log(response)
-            // this.welcome = response.body
-            // console.log(this.welcome)
             this.poilist.list = response.body
-            console.log(this.poilist)
-            // this.$poilist.list = response.body
-            this.$router.push("/map")
+            this.$router.push(address)
           }, response => {
           });
-        }
+        },
       },
       watch: {
         city: function(val) {
@@ -241,10 +268,17 @@
         city_selected: function(val) {
           this.city = this.city_selected
           this.use_gps = false
-        }
+        },
+        use_gps: function(val) {
+          if (this.use_gps == false) {
+            this.location_msg = "🌏 Usa la tua posizione"
+          }
+        },
       },
       mounted() {
-        this.fetchGeolocation()
+        // this.fetchGeolocation()
       }
     }
     </script>
+
+    <style src="./search.sass" lang="sass"/>
