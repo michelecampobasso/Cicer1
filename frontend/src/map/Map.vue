@@ -1,8 +1,12 @@
 <template>
 <div id="main">
-  <modal :modalData="modalData" v-if="showModal" @close="showModal = false">ciaone</modal>
+  <modal :modalData="modalData" v-if="showModal" @close="showModal = false">
+    <div slot="header">{{modalData.header}}</div>
+    <div slot="body">{{modalData.body}}</div>
+  </modal>
   <div id="container">
     <div id="map"></div>
+    aaaa {{modalData.header}}
     <div id="list"> 
       <ul>
       <li v-for="item in poilist.list" @click="showDetails(item)">
@@ -14,6 +18,7 @@
     <div id="instructions"></div>
     
   </div>
+
   <script type="text/x-template" id="modal-template">
   <transition name="modal">
     <div class="modal-mask">
@@ -21,14 +26,11 @@
         <div class="modal-container">
 
           <div class="modal-header">
-            <slot id="m-header" name="header">
-              {{modalData.header}}
-            </slot>
+            <slot id="m-header" name="header"/>
           </div>
 
           <div class="modal-body">
-            <slot id="m-body" name="body">
-            </slot>
+            <slot id="m-body" name="body"/>
           </div>
 
           <div class="modal-footer">
@@ -45,21 +47,15 @@
   </transition>
 </script>
 </div>
-
 </template>
-<script>
 
+<script>
 export default {
   props: ['poilist', 'modalData'],  
   name: 'main',
   data () {
     return {
-        showModal: false,
-      }
-  },
-  watch: {
-    'modalData.header': function () {
-      console.log("modal data changed in " + this.modalData.header );
+      showModal: false,
     }
   },
   methods: {
@@ -169,7 +165,7 @@ export default {
 
   showDetails: function(item){
     var self = this
-    this.modalData.header =  item.properties.nome);
+    this.modalData.header =  item.properties.nome;
     console.log("qui? " + item.properties.nome);
     this.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + item.properties.nome + ' &inprop=url&intestactions=&origin=*').then(response => {
           var json = JSON.parse(JSON.stringify(response.body));
@@ -186,12 +182,21 @@ export default {
 
 
   },
+  watch: {
+    showModal: function(val) {
+      if (this.showModal == false) {
+        console.log("ciaoneeee " + this.modalData.header)
+        this.modalData.header = ""
+        console.log("ciaoneeee " + this.modalData.header)
+      }
+    }
+  },
   computed: function() {
   },
   mounted() {
         this.initMap()    
-
-  }, created() {
+  }, 
+  created() {
   }
 }
 </script>
