@@ -70,4 +70,4 @@ export default {
 }
 </script>
 
-<style src="./selectpois.sass" lang="sass"/>
+<style src="./selectPOIs.sass" lang="sass"/>
