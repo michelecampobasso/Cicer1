@@ -244,7 +244,7 @@
           if (this.use_gps) {
             console.log(post.coordinates)
             console.log(this.gps)
-            this.gps.coordinates = [this.position.latitude, this.position.longitude]
+            this.gps.coordinates = this.position
           }
           post.radius = 1000
           post.max_results = this.durations[this.picked_duration].value
