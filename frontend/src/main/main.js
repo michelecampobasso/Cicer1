@@ -30,6 +30,10 @@ Vue.component('modal', {
   template: '#modal-template'
 })
 
+Vue.component('modalTag', {
+  template: '#modal-tag-template'
+})
+
 
 new Vue({
   router,

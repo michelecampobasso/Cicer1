@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view :poilist="poilist" :modalData="modalData"></router-view>
+    <router-view :poilist="poilist" :modalData="modalData" :tags="tags"></router-view>
   </div>
 </template>
 
@@ -15,6 +15,9 @@ export default {
       modalData : {
         header : "",
         body : ""
+      },
+      tags : {
+        list : []
       }
     }
   }

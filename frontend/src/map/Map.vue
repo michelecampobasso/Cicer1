@@ -1,16 +1,28 @@
 <template>
 <div id="main">
-  <modal :modalData="modalData" v-if="showModal" @close="showModal = false">
+  <modal :modalData="modalData" v-if="showModalPoi" @close="showModalPoi = false">
     <div slot="header">{{modalData.header}}</div>
-    <div slot="body">{{modalData.body}}</div>
+    <div  v-html="modalData.body" slot="body"></div>
   </modal>
+  <modalTag :currentPoi="currentPoi" :tags="tags" v-if="showModalTag" @close="showModalTag = false">
+    <div slot="t-header">Aggiungi tag per {{currentPoi.properties.nome}}</div>
+    <div slot="t-body">
+      <ul>
+      <li v-for="tag in tags.list" @click="selectTag(tag)" >{{tag.name}}</li>
+      </ul>
+      <button @click="updateTags()">Conferma</button>
+    </div>
+  </modalTag>
   <div id="container">
     <div id="map"></div>
-    aaaa {{modalData.header}}
+    {{modalData.header}}
     <div id="list"> 
       <ul>
-      <li v-for="item in poilist.list" @click="showDetails(item)">
-        {{item.properties.nome}} 
+      <li v-for="item in poilist.list" >
+        <p @click="showDetails(item)">{{item.properties.nome}} </p>
+        <button @click="addLike(item, true)">👍🏻</button>
+        <button @click="addLike(item, false)">👎🏻</button>
+        <button @click="openModalTag(item)">Aggiungi tag</button>
       </li>   
       </ul>
     </div><button id="showList" v-on:click="showList">LIST</button>
@@ -24,6 +36,13 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
+        <div class="modal-footer">
+            <slot name="footer">
+              <button class="modal-default-button" @click="$emit('close')">
+                X
+              </button>
+            </slot>
+          </div>
 
           <div class="modal-header">
             <slot id="m-header" name="header"/>
@@ -33,14 +52,34 @@
             <slot id="m-body" name="body"/>
           </div>
 
-          <div class="modal-footer">
-            <slot name="footer">
-              - 
+          
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
+
+<script type="text/x-template" id="modal-tag-template">
+  <transition name="modal">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+        <div class="modal-footer">
+            <slot name="t-footer">
               <button class="modal-default-button" @click="$emit('close')">
-                OK
+                X
               </button>
             </slot>
           </div>
+
+          <div class="modal-header">
+            <slot id="m-header" name="t-header"/>
+          </div>
+
+          <div class="modal-body">
+            <slot id="m-body" name="t-body"/>            
+          </div>
+      
         </div>
       </div>
     </div>
@@ -51,18 +90,20 @@
 
 <script>
 export default {
-  props: ['poilist', 'modalData'],  
+  props: ['poilist', 'modalData', 'tags'],  
   name: 'main',
   data () {
     return {
-      showModal: false,
+      showModalPoi: false,      
+      showModalTag: false,
+      currentPoi : [],
     }
   },
   methods: {
     initMap: function(){
               
     if(this.poilist.list.length == 0){
-        
+        //ERRORE
     }
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 17,
@@ -96,37 +137,9 @@ export default {
       google.maps.event.addListener(marker, 'click', function(curr) { 
         return function(){
           self.showDetails(curr);
-          console.log("odio la vita");  
         }
         }(curr));
       }
-      
-        /*self.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + name + ' &inprop=url&intestactions=&origin=*').then(response => {
-          var json = JSON.parse(JSON.stringify(response.body));
-          var id = Object.keys(response.body.query.pages)[0];
-          /*infowindow.setContent('<div id="content">'+
-            '<h1 id="firstHeading" class="firstHeading">' + name + ' </h1>');
-            
-          infowindow.open(map, this); 
-          //Se id è a -1 la pagina non esiste
-          if(id != -1){  
-            var object =  json["query"]["pages"][id];
-            url = object["canonicalurl"];
-            extract = object["extract"];
-             infowindow.setContent('<div id="content">'+
-            '<h1 id="firstHeading" class="firstHeading">' + name + ' </h1>'+
-            '<div id="bodyContent">'+
-            extract +
-            url + 
-            ''+
-            '</div>'+
-            '</div>');
-            infowindow.open(map, this); 
-          }
-        });
-        }
-      }(name));*/
-    
 
     var waypoints = [] 
     for(var i = 1; i < this.poilist.list.length; i++){
@@ -140,6 +153,7 @@ export default {
           origin: firstPoint,
           destination: firstPoint,
           waypoints: waypoints,
+          optimizeWaypoints: true,
           travelMode: 'WALKING'
         }, function(response, status) {
           // Route the directions and pass the response to a function to create
@@ -154,6 +168,15 @@ export default {
         });
      
   },
+  initTags : function() {
+      var keys = Object.keys(this.poilist.list[0].tags);
+      var temp_tags = []
+      for(var i = 0; i < keys.length; i++){      
+        temp_tags[i] = {'id' : i, 'name' : keys[i], 'selected' : false }
+      }
+      this.tags.list = temp_tags;
+      //console.log(JSON.stringify(this.tags.list));
+  },
   showList : function() {
     document.getElementById("list").style.visibility='visible';
     document.getElementById("instructions").style.visibility='hidden';
@@ -167,36 +190,77 @@ export default {
     var self = this
     this.modalData.header =  item.properties.nome;
     console.log("qui? " + item.properties.nome);
-    this.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + item.properties.nome + ' &inprop=url&intestactions=&origin=*').then(response => {
+    this.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + item.properties.nome +  ' &inprop=url&intestactions=&origin=*').then(response => {
           var json = JSON.parse(JSON.stringify(response.body));
           var id = Object.keys(response.body.query.pages)[0];
+          console.log("ciao");
           if(id != -1){
             var object =  json["query"]["pages"][id];
             //url = object["canonicalurl"];
             var extract = object["extract"];
-            //self.modalBody = extract;
+            self.modalData.body = extract;
+          } else {
+            self.modalData.body = "";
           }
+
       });
-    this.showModal = true;  
+    this.showModalPoi = true;  
     }, 
-
-
+  addLike : function(item, liked){
+    console.log("liked " + liked + " on item" + item.properties.nome );
+    var url = "http://138.68.79.145:3000/popularity"
+    var post = {}
+    post.collection_name = "poi"
+    post.id = this.currentPoi.id   
+    if(liked){
+        post.rating = 1
+    } else {
+        post.rating = -1      
+    }
+    this.$http.post(url, post, {
+      headers: {
+            'Content-Type': 'application/json'
+            }
+          }).then(response => {
+            console.log("ok")
+          }, response => {
+          });
   },
-  watch: {
-    showModal: function(val) {
-      if (this.showModal == false) {
-        console.log("ciaoneeee " + this.modalData.header)
-        this.modalData.header = ""
-        console.log("ciaoneeee " + this.modalData.header)
+  selectTag : function(tag){
+    this.tags.list[tag.id].selected = !this.tags.list[tag.id].selected
+    console.log(this.tags.list[tag.id].selected);
+  },
+  updateTags : function(){
+    var url = "http://138.68.79.145:3000/tags"
+    var post = {}
+    post.collection_name = "poi"
+    post.id = this.currentPoi.id   
+    for(var i = 0; i < Object.keys(this.tags.list).length; i++ ){ 
+      if(this.tags.list[i].selected){
+        post.tag = this.tags.list[i].name
+        this.$http.post(url, post, {
+          headers: {
+            'Content-Type': 'application/json'
+            }
+          }).then(response => {
+            console.log(response)
+          }, response => {
+          });
       }
     }
+    this.showModalTag = false
   },
-  computed: function() {
+    openModalTag : function(item){
+      this.showModalTag = true;
+      this.currentPoi = item;
+      console.log(JSON.stringify(this.currentPoi.popularity))
+    }
   },
   mounted() {
-        this.initMap()    
+        this.initMap()
   }, 
   created() {
+    this.initTags()   
   }
 }
 </script>
@@ -224,7 +288,7 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
+  width: 1000px;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
