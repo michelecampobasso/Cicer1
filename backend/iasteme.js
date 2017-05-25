@@ -57,7 +57,7 @@ MongoClient.connect(url, function (err, mongoClient) {
 app.use(express.static(path.join(__dirname, 'public')));
 
 var googleMapsClient = require('@google/maps').createClient({
-    key: 'AIzaSyCAoPkwPUWvqpkFAOARF75rwiSM6u6VBW4'
+    key: 'AIzaSyAUQ8f8PQ9fwHl2O83RkLUz3zjNn4bHu30'
 });
 
 app.get('/:collection/insertRatings', function (req, res) {
@@ -68,32 +68,33 @@ app.get('/:collection/insertRatings', function (req, res) {
         } else {
             console.log("Objects retrieved");
             objs.forEach(function (item) {
-                googleMapsClient.placesNearby({
-                    location: [item.coordinates[1], item.coordinates[0]],
-                    radius: 10
-                }, function (err, response) {
-                    var rating = 0;
-                    if (response.json) {
-                        response.json.results.forEach(function (element) {
-                            if (element.rating) {
-                                if (element.rating > rating) {
-                                    rating = element.rating;
+                if (item.rating==0 && !item.added) {
+                    googleMapsClient.placesNearby({
+                        location: [item.coordinates[1], item.coordinates[0]],
+                        radius: 30
+                    }, function (err, response) {
+                        var rating = 0;
+                        if (response.json) {
+                            response.json.results.forEach(function (element) {
+                                if (element.rating) {
+                                    if (element.rating > rating) {
+                                        rating = element.rating;
+                                    }
                                 }
-                            }
-                        });
-                        console.log(rating);
-                        collectionDriver.insertRatings(item.id, rating, function (err, res) {
-                            if (!err) {
-                                console.log("okkei");
-                            } else {
-                                console.log("porcoddio");
-                            }
-                        })
-                    } else {
-                        console.log("error!");
-                    }
-
-                });
+                            });
+                            console.log(rating);
+                            collectionDriver.insertRatings(item.id, rating, function (err, res) {
+                                if (!err) {
+                                    console.log("okkei");
+                                } else {
+                                    console.log("porcoddio");
+                                }
+                            })
+                        } else {
+                            console.log("error!");
+                        }
+                    });
+                };
             });
         }
     });

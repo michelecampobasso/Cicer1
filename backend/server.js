@@ -149,6 +149,31 @@ app.post('/poi', function(req, res) {
 });
 
 /*
+ * Given a collection name (poi), the city and the PoI 
+ * prefix needed, it returns the matching PoIs.
+ *
+ * Error codes:
+ *     -400: Missing body.
+ *     -500: Something broke in the server. Bad story.
+ */
+
+app.get('/poi/:city/:poi_prefix', function(req, res) {
+  var params = req.params;
+  var poiPrefix = params.poi_prefix;
+  var collection = 'poi';
+  var city = params.city;
+  if (poiPrefix && collection && city) {
+    collectionDriver.getPoiByName(collection, city, poiPrefix, function(error, objs) {
+      if (error) { res.send(500, error); }
+      else { res.send(200, objs); }
+    });
+  } else {
+    res.send(400, {error: 'bad url', url: req.url});
+  }
+});
+
+
+/*
  * Given a collection name (poi) and an array of IDs, 
  * it updates their popularity.
  *

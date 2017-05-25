@@ -130,12 +130,27 @@ CollectionDriver.prototype.getPoiByParams = function (collectionName, coordinate
   });
 };
 
+// Definition of a DB helper that allows to get all the PoIs that match with name and city
+CollectionDriver.prototype.getPoiByName = function (collectionName, city, pattern, callback) {
+  this.getCollection(collectionName, function (error, the_collection) {
+    if (error) callback(error);
+    else {
+      //the_collection.find({'properties.comune': city});
+      the_collection.distinct('properties.nome', {
+        'properties.nome': new RegExp(pattern, 'i'),
+        'properties.comune': new RegExp('^' + city + '$', 'i'),
+      }, function (error, pois) {
+        callback(null, pois);
+      });
+    }
+  })
+};
+
 // Definition of a DB helper that allows to get all the cities that begin with a specified prefix
 CollectionDriver.prototype.getCities = function (collectionName, city, callback) {
   this.getCollection(collectionName, function (error, the_collection) {
     if (error) callback(error);
     else {
-      var regex = '/^' + city + '/i';
       the_collection.distinct('properties.comune', {
         'properties.comune': new RegExp('^' + city, 'i')
       }, function (error, cities) {
@@ -147,7 +162,6 @@ CollectionDriver.prototype.getCities = function (collectionName, city, callback)
 
 // Definition of a DB helper that allows to insert a rating for a specified PoI
 CollectionDriver.prototype.insertRatings = function (objectId, rating, callback) {
-  //console.log("objectid "+objectId+"rating "+rating);
   this.db.collection('poi').updateOne({
       "id": objectId
     }, {
@@ -157,7 +171,6 @@ CollectionDriver.prototype.insertRatings = function (objectId, rating, callback)
       }
     },
     function (err, results) {
-      //console.log(results);
       if (!err) {
         callback(null, results);
       } else {
@@ -195,7 +208,6 @@ CollectionDriver.prototype.updatePopularity = function (objectID, collectionName
 CollectionDriver.prototype.updateTags = function (objectID, collectionName, tagName, callback) {
   var barbatrucco = this;
   this.getById(collectionName, objectID, function(error, elem) {
-    console.log(elem);
     if (error) {
       callback(error, null);
       var currentTagValue = elem.tags.tagName;
