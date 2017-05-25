@@ -32,14 +32,20 @@ export default {
   name: 'selectpois',
   data () {
     return {
+      pois_temp: this.poilist.list,
       pois: []
     }
   },
   methods: {
     addFields: function() {
-      this.pois = JSON.parse(JSON.stringify(this.pois))
+      for (var i = 0; i < this.pois_temp.length; i++) {
+        this.pois_temp[i].is_selected = true
+        this.pois_temp[i].id_cicer1 = i
+      }
+      this.pois = JSON.parse(JSON.stringify(this.pois_temp))
     },
     clickOnPoi: function(poi_id) {
+      console.log("cioane " + poi_id)
       console.log(poi_id, this.pois[poi_id].is_selected, !this.pois[poi_id].is_selected)
       this.pois[poi_id].is_selected = !this.pois[poi_id].is_selected
     },
@@ -55,7 +61,7 @@ export default {
   },
   watch: {
   },
-  created() {
+  mounted() {
     this.addFields()
   } 
 }
