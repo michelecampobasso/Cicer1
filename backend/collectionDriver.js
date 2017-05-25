@@ -71,6 +71,24 @@ CollectionDriver.prototype.get = function (collectionName, id, callback) {
   });
 };
 
+// Definition of a DB helper that obtains a single item from a collection by its _id.
+CollectionDriver.prototype.getById = function (collectionName, id, callback) {
+  this.getCollection(collectionName, function (error, the_collection) {
+    if (error) callback(error);
+    else {
+      // Obtained the collection via getCollection,
+      // it checks with a findOne if collection has at least one element and then returns it.
+      the_collection.findOne({
+        'id': id
+      }, function (error, doc) {
+        if (error) callback(error);
+        else callback(null, doc);
+      });
+    }
+  });
+};
+
+
 // Definition of a DB helper that allows get all PoI by an array of categories
 CollectionDriver.prototype.getPoiByCategories = function (collectionName, categories, callback) {
   this.getCollection(collectionName, function (error, the_collection) {
@@ -149,31 +167,27 @@ CollectionDriver.prototype.insertRatings = function (objectId, rating, callback)
 };
 
 // Definition of a DB helper that allows to increase by one the popularity of a specified PoI
-CollectionDriver.prototype.updatePopularity = function (objectIDs, collectionName, callback) {
+CollectionDriver.prototype.updatePopularity = function (objectID, collectionName, rating, callback) {
   //console.log("objectid "+objectId+"rating "+rating);
   var barbatrucco = this;
-  this.getCollection(collectionName, function (error, the_collection) {
-    if (error) callback(error);
-    else {
-      the_collection.find({
-        "id": {
-          $in: objectIDs
+  this.getById(collectionName, objectID, function(error, elem) {
+    if (error) {
+      callback(error, null);
+    } else {
+      barbatrucco.db.collection(collectionName).updateOne({
+        "id": objectID
+      }, {
+        $set: {
+          "popularity": elem.popularity + rating
         }
-      }).forEach(function (element) {
-        barbatrucco.db.collection(collectionName).updateOne({
-          "id": element.id
-        }, {
-          $set: {
-            "popularity": element.popularity + 1
-          }
-        }, function (err, results) {
-          if (err) {
-            callback(err, null);
-          } else {
-            callback(null, true);
-          }
-        });
+      }, function (err, results) {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, true);
+        }
       });
+      callback(null, true);
     };
   });
 };

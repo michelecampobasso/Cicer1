@@ -162,10 +162,14 @@ app.post('/popularity', function(req, res) {
     var body = req.body;
     if (body) {
       // Please, check if params are ok
-      collectionDriver.updatePopularity(body.ids, body.collection_name, function(error, fine) {
-        if (error) { res.send(500, error); }
-        else { res.send(200, {}); }
-      });
+      if (body.rating == 1 || body.rating == -1) {
+        collectionDriver.updatePopularity(body.id, body.collection_name, body.rating, function(error, fine) {
+          if (error) { res.send(500, error); }
+          else { res.send(200, {}); }
+        });
+      } else {
+        res.send(400, {error: 'wrong params', url: req.url});
+      }
     } else {
       res.send(400, {error: 'missing body', url: req.url});
     }
