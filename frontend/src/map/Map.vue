@@ -6,6 +6,7 @@
   </modal>
   <div id="container">
     <div id="map"></div>
+    bbbb {{gps}}
     aaaa {{modalData.header}}
     <div id="list"> 
       <ul>
@@ -51,7 +52,7 @@
 
 <script>
 export default {
-  props: ['poilist', 'modalData'],  
+  props: ['poilist', 'modalData', 'gps'],  
   name: 'main',
   data () {
     return {
