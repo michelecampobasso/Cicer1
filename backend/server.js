@@ -178,6 +178,32 @@ app.post('/popularity', function(req, res) {
   }
 });
 
+/*
+ * Given a collection name (poi) a tag name and a PoI's ID, 
+ * it increases that field.
+ *
+ * Error codes:
+ *     -400: Malformed body or wrong params.
+ *     -500: Something broke in the server. Bad story.
+ */
+
+app.post('/tags', function(req, res) {
+  try {
+    var body = req.body;
+    if (body) {
+      // Please, check if params are ok
+      collectionDriver.updateTags(body.id, body.collection_name, body.tag, function(error, fine) {
+        if (error) { res.send(500, error); }
+        else { res.send(200, {}); }
+      });
+    } else {
+      res.send(400, {error: 'missing body', url: req.url});
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 // Default "catch-all" non available requests
 app.use(function(req, res) {
   res.render('404', {url:req.url});

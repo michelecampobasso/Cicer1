@@ -166,9 +166,8 @@ CollectionDriver.prototype.insertRatings = function (objectId, rating, callback)
     });
 };
 
-// Definition of a DB helper that allows to increase by one the popularity of a specified PoI
+// Definition of a DB helper that allows to update the popularity of a specified PoI
 CollectionDriver.prototype.updatePopularity = function (objectID, collectionName, rating, callback) {
-  //console.log("objectid "+objectId+"rating "+rating);
   var barbatrucco = this;
   this.getById(collectionName, objectID, function(error, elem) {
     if (error) {
@@ -179,6 +178,33 @@ CollectionDriver.prototype.updatePopularity = function (objectID, collectionName
       }, {
         $set: {
           "popularity": elem.popularity + rating
+        }
+      }, function (err, results) {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, true);
+        }
+      });
+      callback(null, true);
+    };
+  });
+};
+
+// Definition of a DB helper that allows to increase by one the value of a tag of a specified PoI
+CollectionDriver.prototype.updateTags = function (objectID, collectionName, tagName, callback) {
+  var barbatrucco = this;
+  this.getById(collectionName, objectID, function(error, elem) {
+    console.log(elem);
+    if (error) {
+      callback(error, null);
+      var currentTagValue = elem.tags.tagName;
+    } else {
+      barbatrucco.db.collection(collectionName).updateOne({
+        "id": objectID
+      }, {
+        $set: {
+          ["tags."+tagName]: elem.tags[tagName] +1
         }
       }, function (err, results) {
         if (err) {
