@@ -13,12 +13,14 @@ export default {
         list: [],
       },
       modalData : {
-        header : "",
-        body : ""
+        name : "",
+        body : "",
+        tags : [],
+        likes : ""
       },
       tags : {
         list : []
-      }
+      }, 
     }
   }
 }

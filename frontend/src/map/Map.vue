@@ -1,7 +1,7 @@
 <template>
 <div id="main">
   <modal :modalData="modalData" v-if="showModalPoi" @close="showModalPoi = false">
-    <div slot="header">{{modalData.header}}</div>
+    <div slot="header">{{modalData.name}} - Piaciuto {{modalData.likes}} volte</div>
     <div  v-html="modalData.body" slot="body"></div>
   </modal>
   <modalTag :currentPoi="currentPoi" :tags="tags" v-if="showModalTag" @close="showModalTag = false">
@@ -18,11 +18,11 @@
     {{modalData.header}}
     <div id="list"> 
       <ul>
-      <li v-for="item in poilist.list" >
+      <li v-for="(item, index) in poilist.list" >
         <p @click="showDetails(item)">{{item.properties.nome}} </p>
-        <button @click="addLike(item, true)">👍🏻</button>
-        <button @click="addLike(item, false)">👎🏻</button>
-        <button @click="openModalTag(item)">Aggiungi tag</button>
+        <button @click="addLike(index, item, true)">👍🏻</button>
+        <button @click="addLike(index, item, false)">👎🏻</button>
+        <button @click="openModalTag(item, index)">Aggiungi tag</button>
       </li>   
       </ul>
     </div><button id="showList" v-on:click="showList">LIST</button>
@@ -187,9 +187,11 @@ export default {
   },
 
   showDetails: function(item){
+    console.log(item.properties.nome + " " + item.popularity)
     var self = this
-    this.modalData.header =  item.properties.nome;
-    console.log("qui? " + item.properties.nome);
+    this.modalData.name = item.properties.nome
+    this.modalData.likes = item.popularity
+    this.modalData.tags = item.tags
     this.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + item.properties.nome +  ' &inprop=url&intestactions=&origin=*').then(response => {
           var json = JSON.parse(JSON.stringify(response.body));
           var id = Object.keys(response.body.query.pages)[0];
@@ -198,6 +200,7 @@ export default {
             var object =  json["query"]["pages"][id];
             //url = object["canonicalurl"];
             var extract = object["extract"];
+            //if(//Inizia con )
             self.modalData.body = extract;
           } else {
             self.modalData.body = "";
@@ -206,25 +209,22 @@ export default {
       });
     this.showModalPoi = true;  
     }, 
-  addLike : function(item, liked){
-    console.log("liked " + liked + " on item" + item.properties.nome );
+  addLike : function(index, item, liked){
     var url = "http://138.68.79.145:3000/popularity"
     var post = {}
     post.collection_name = "poi"
-    post.id = this.currentPoi.id   
-    if(liked){
-        post.rating = 1
-    } else {
-        post.rating = -1      
-    }
+    post.id = item.id   
+    var like = liked ? 1 : -1 
+    post.rating = like
+    console.log(post)
     this.$http.post(url, post, {
       headers: {
             'Content-Type': 'application/json'
             }
-          }).then(response => {
+     }).then(response => {
             console.log("ok")
-          }, response => {
-          });
+     }, response => {});
+     this.poilist.list[index].popularity += like;
   },
   selectTag : function(tag){
     this.tags.list[tag.id].selected = !this.tags.list[tag.id].selected
@@ -235,25 +235,29 @@ export default {
     var post = {}
     post.collection_name = "poi"
     post.id = this.currentPoi.id   
+    console.log("ma?")
     for(var i = 0; i < Object.keys(this.tags.list).length; i++ ){ 
       if(this.tags.list[i].selected){
-        post.tag = this.tags.list[i].name
+        var name = this.tags.list[i].name
+        post.tag = name;
         this.$http.post(url, post, {
           headers: {
             'Content-Type': 'application/json'
             }
           }).then(response => {
-            console.log(response)
+            console.log("ok")
           }, response => {
           });
+        this.poilist.list[this.currentPoi.index].tags[name] += 1;
       }
     }
     this.showModalTag = false
   },
-    openModalTag : function(item){
+    openModalTag : function(item, index){
       this.showModalTag = true;
       this.currentPoi = item;
-      console.log(JSON.stringify(this.currentPoi.popularity))
+      this.currentPoi.index = index
+      console.log("OH" + JSON.stringify(this.currentPoi.tags))
     }
   },
   mounted() {

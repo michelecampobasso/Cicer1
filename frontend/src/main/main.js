@@ -26,7 +26,7 @@ const router = new VueRouter({
 })
 
 Vue.component('modal', {
-  props: ['modalData'],
+  props: ['modalData' ],
   template: '#modal-template'
 })
 
