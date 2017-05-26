@@ -2,7 +2,6 @@
       <div id="search">
         <div class="gps" @click="fetchGeolocation()">
              {{ location_msg }}
-          </md-checkbox>
         </div>
         
         <div class="city-input">
@@ -33,7 +32,6 @@
           <div v-for="category in categories">
             <div v-bind:class="[category.is_selected ? 'selected' : '', 'category']" @click="selectCategory(category.cat_id)">
                 <span v-if="category.is_selected">✔</span> &nbsp;{{category.cat_string_short}} {{category.cat_emoji}} 
-              </md-checkbox>
             </div>
           </div>
         </div>
@@ -51,7 +49,7 @@
     
     export default {
       name: 'search',
-      props: ['poilist'],
+      props: ['poilist', 'gps'],
       data() {
         return {
           use_gps: false,
@@ -152,23 +150,23 @@
         fetchGeolocation: function() {
           this.use_gps = !this.use_gps
           if (this.use_gps == true) {
-            // this.position.longitude = 11.332179
-            // this.position.latitude = 44.497449 
-            // this.reverseCoord(this.position)
-            // this.location_msg = ""
-            if(navigator.geolocation){
-              this.location_msg = "🔎 Ti sto cercando..."
-              navigator.geolocation.getCurrentPosition(position => {
-                this.location_msg = "👌 Sto usando la tua posizione"
-                this.position.longitude = position.coords.longitude
-                this.position.latitude = position.coords.latitude
-                this.reverseCoord(this.position)
-              }, position => {
-                  this.location_msg = "C'è stato un problema"
-              }, {maximumAge:100000, timeout:10000, enableHighAccuracy:true})
-            } else {
-              this.location_msg = "😐 Funzionalità non supportata"
-            }
+            this.position.longitude = 11.332179
+            this.position.latitude = 44.497449 
+            this.reverseCoord(this.position)
+            this.location_msg = "👌 Sto usando la tua posizione"
+            // if(navigator.geolocation){
+            //   this.location_msg = "🔎 Ti sto cercando..."
+            //   navigator.geolocation.getCurrentPosition(position => {
+            //     this.location_msg = "👌 Sto usando la tua posizione"
+            //     this.position.longitude = position.coords.longitude
+            //     this.position.latitude = position.coords.latitude
+            //     this.reverseCoord(this.position)
+            //   }, position => {
+            //       this.location_msg = "C'è stato un problema"
+            //   }, {maximumAge:100000, timeout:10000, enableHighAccuracy:true})
+            // } else {
+            //   this.location_msg = "😐 Funzionalità non supportata"
+            // }
           } else {
             this.location_msg = "🌏 Usa la tua posizione"
             this.position.longitude = ""
@@ -201,6 +199,9 @@
         autocomplete: _.debounce(
           function() {
             var url = "http://138.68.79.145:3000/city/poi/" + this.city
+            if (this.city.length <= 2) {
+              this.city_suggestions = []
+            } else {
             this.$http.get(url, { 'Access-Control-Allow-Origin': true }).then(response => {
               if (response.body.length == 0) {
               } else {
@@ -210,6 +211,7 @@
               console.log("non andato")
               console.log(response)
             })
+          }
         }, 500),
         selectCity: function(city_string) {
           this.city_selected = city_string
@@ -235,13 +237,15 @@
               post.categories.push(this.categories[i].cat_string)
             }
           }
-
           if (!this.use_gps) {
-            console.log("arrivato qua")
             this.selectCity(this.city_selected)
           }
           post.coordinates = [this.position.latitude, this.position.longitude]
-          console.log(post.coordinates)
+          if (this.use_gps) {
+            console.log(post.coordinates)
+            console.log(this.gps)
+            this.gps.coordinates = this.position
+          }
           post.radius = 1000
           post.max_results = this.durations[this.picked_duration].value
           // console.log(post)

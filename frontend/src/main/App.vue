@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view :poilist="poilist" :modalData="modalData" :tags="tags"></router-view>
+    <router-view :poilist="poilist" :gps="gps" :modalData="modalData" :tags="tags"></router-view>
   </div>
 </template>
 
@@ -11,6 +11,9 @@ export default {
     return {
       poilist: {
         list: [],
+      },
+      gps: {
+        coordinates: {},
       },
       modalData : {
         name : "",
