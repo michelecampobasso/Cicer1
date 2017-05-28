@@ -1,13 +1,13 @@
     <template>
       <div id="search">
-        <div class="gps" @click="fetchGeolocation()">
-             {{ location_msg }}
+        <div v-bind:class="[use_gps ? 'selected' : '', 'gps']" @click="fetchGeolocation()">
+             <i class="material-icons">{{gps_icon}}</i> {{ location_msg }}
         </div>
         
         <div class="city-input">
           <md-input-container>
             <label>Città:</label>
-            <md-input class="city-input-form" v-model="city" placeholder="Seleziona la città"></md-input>
+            <md-input class="city-input-form" v-model="city" placeholder="Seleziona la città da visitare"></md-input>
           </md-input-container> 
           <div class="city-suggestions">
             <ul>
@@ -20,25 +20,29 @@
         
         <div class="trip-length-container">
           <span class="section_title">Quanto tempo hai a disposizione?</span>
-          <div v-for="duration in durations">
-            <div v-bind:class="[duration.is_selected ? 'selected' : '', 'length']" @click="selectTripLength(duration)">
-              {{duration.string}}
+          <div class="length-container">
+            <div v-for="duration in durations">
+              <div v-bind:class="[duration.is_selected ? 'selected' : '', 'length']" @click="selectTripLength(duration)">
+                {{duration.string}}
+              </div>
             </div>
           </div>
         </div>
 
         <div class="category-container">
           <span class="section_title">Cosa ti interessa di più?</span>
-          <div v-for="category in categories">
-            <div v-bind:class="[category.is_selected ? 'selected' : '', 'category']" @click="selectCategory(category.cat_id)">
-                <span v-if="category.is_selected">✔</span> &nbsp;{{category.cat_string_short}} {{category.cat_emoji}} 
-            </div>
+          <div v-for="category in categories" v-bind:class="[category.is_selected ? 'selected' : '', 'category']" @click="selectCategory(category.cat_id)">
+              {{category.cat_string_short}} {{category.cat_emoji}} 
           </div>
         </div>
 
         <div class="cta-buttons-container" v-if="city_selected != '' || city_with_gps != ''">
-          <div  @click="searchPOI('/map')" class="cta-button">🔎 Cerca!</div>
-          <div @click="searchPOI('/search/manual')" class="cta-button">👇 Filtra a mano</div>
+          <div  @click="searchPOI('/map')" class="cta-button cta-1">
+            <i class="material-icons">search</i> Vai alla mappa
+          </div>
+          <div @click="searchPOI('/search/manual')" class="cta-button cta-2">
+            <i class="material-icons">filter_list</i> Filtra a mano
+          </div>
         </div>
         <br>
       </div>
@@ -53,7 +57,8 @@
       data() {
         return {
           use_gps: false,
-          location_msg: "🌏 Usa la tua posizione",
+          gps_icon: "gps_not_fixed",
+          location_msg: "Usa la tua posizione",
           city: "",
           city_with_gps: "",
           city_selected: "",
@@ -66,16 +71,16 @@
           categories: [
             {
               cat_id: 0,
-              cat_string: "Edifici religiosi",
-              cat_string_short: "CHIESE",
-              cat_emoji: "⛪",
+              cat_string: "Parchi e piazze",
+              cat_string_short: "ALL'APERTO",
+              cat_emoji: "⛲",
               is_selected: true
             },
             {
               cat_id: 1,
-              cat_string: "Parchi e piazze",
-              cat_string_short: "ALL'APERTO",
-              cat_emoji: "⛲",
+              cat_string: "Edifici religiosi",
+              cat_string_short: "CHIESE",
+              cat_emoji: "⛪",
               is_selected: true
             },
             {
@@ -110,7 +115,7 @@
               cat_id: 6,
               cat_string: "Strutture romane",
               cat_string_short: "ROMANI",
-              cat_emoji: "🗿",
+              cat_emoji: "⚔️",
               is_selected: true
             }
           ],
@@ -153,7 +158,7 @@
             this.position.longitude = 11.332179
             this.position.latitude = 44.497449 
             this.reverseCoord(this.position)
-            this.location_msg = "👌 Sto usando la tua posizione"
+            this.location_msg = "Sto usando la tua posizione"
             // if(navigator.geolocation){
             //   this.location_msg = "🔎 Ti sto cercando..."
             //   navigator.geolocation.getCurrentPosition(position => {
@@ -274,7 +279,10 @@
         },
         use_gps: function(val) {
           if (this.use_gps == false) {
-            this.location_msg = "🌏 Usa la tua posizione"
+            this.location_msg = "Usa la tua posizione"
+            this.gps_icon = "gps_not_fixed"
+          } else {
+            this.gps_icon = "gps_fixed"
           }
         },
       },
