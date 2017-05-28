@@ -20,8 +20,8 @@ body
     padding: 0
     width: 100%
     height: 100%
-    background-color: $color-bg-light
     color: $color-text-dark
+    background-color: $color-bg-light !important
     text-align: center
     font-family: $font-medium
 
@@ -71,7 +71,6 @@ body
 // APP
 
 #app
-    background-color: $color-bg-light
     font-size: 16px        
     line-height: 40px
     margin: 0 auto
@@ -79,12 +78,15 @@ body
     height: 100%
     max-width: 1050px
     padding-top: 70px
+    background-color: $color-bg-light
 
     .header
         @extend .shadow
         position: fixed
+        margin: 0 auto
         margin-top: -70px
         width: 100%
+        left: 0
         z-index: 2
         background-color: $color-bg-dark
         color: $color-text-light

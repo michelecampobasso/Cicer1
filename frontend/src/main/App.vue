@@ -5,7 +5,6 @@
       <p class="title">Cicerone</p>
       <p class="subtitle">La guida per i tuoi viaggi</p>
     </div>
-
     <router-view :poilist="poilist" :gps="gps" :modalData="modalData" :tags="tags"></router-view>
   </div>
 </template>
