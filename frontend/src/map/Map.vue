@@ -15,19 +15,20 @@
   </modalTag>
   <div id="container">
     <div id="map"></div>
-    {{gps}}
-    {{modalData.header}}
+     <div id="tabContainer">
+    <button id="showList" class="tab" v-on:click="showList">Punti di interesse</button>
+    <button id="showInst" class="tab" v-on:click="showInst">Indicazioni </button>
+    </div>
     <div id="list"> 
       <ul>
-      <li v-for="(item, index) in poilist.list" >
+      <li class="poiItem" v-for="(item, index) in poilist.list" >
         <p @click="showDetails(item)">{{item.properties.nome}} </p>
         <button @click="addLike(index, item, true)">👍🏻</button>
         <button @click="addLike(index, item, false)">👎🏻</button>
         <button @click="openModalTag(item, index)">Aggiungi tag</button>
       </li>   
       </ul>
-    </div><button id="showList" v-on:click="showList">LIST</button>
-    <button id="showInst" v-on:click="showInst">instructions</button>
+    </div>
     <div id="instructions"></div>
     
   </div>
@@ -123,7 +124,20 @@ export default {
     var url;
     control.style.display = "block";
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
-    var firstPoint = new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]);
+    var start; 
+    if(Object.keys(this.gps).length == 0){
+      var firstPoint = new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]);
+      start = 1
+    } else {
+      var firstPoint = new google.maps.LatLng(this.gps.coordinates.latitude, this.gps.coordinates.longitude);
+      var markerAs = new google.maps.Marker({
+          position: firstPoint,
+          map: map,
+          label: '🐱'
+      });
+      console.log("o");
+      start = 0
+    }
 
     for (var i = 0; i < this.poilist.list.length; i++) {
       var name = this.poilist.list[i].properties.nome;
@@ -143,7 +157,7 @@ export default {
       }
 
     var waypoints = [] 
-    for(var i = 1; i < this.poilist.list.length; i++){
+    for(var i = start; i < this.poilist.list.length; i++){
       waypoints.push({
           location: new google.maps.LatLng(this.poilist.list[i].coordinates[1], this.poilist.list[i].coordinates[0]),
           stopover: true
@@ -179,12 +193,12 @@ export default {
       //console.log(JSON.stringify(this.tags.list));
   },
   showList : function() {
-    document.getElementById("list").style.visibility='visible';
-    document.getElementById("instructions").style.visibility='hidden';
+    document.getElementById("list").style.display='flex';
+    document.getElementById("instructions").style.display='none';
   },
   showInst : function() {
-    document.getElementById("list").style.visibility='hidden';
-    document.getElementById("instructions").style.visibility='visible';
+    document.getElementById("list").style.display='none';
+    document.getElementById("instructions").style.display='block';
   },
 
   showDetails: function(item){
@@ -272,48 +286,3 @@ export default {
 
 
 <style src="./map.sass" lang="sass"/>
-<style lang="css">
-
-
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, .5);
-  display: table;
-  transition: opacity .3s ease;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-container {
-  width: 1000px;
-  margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-  transition: all .3s ease;
-  font-family: Helvetica, Arial, sans-serif;
-}
-
-.modal-header h3 {
-  margin-top: 0;
-  color: #42b983;
-}
-
-.modal-body {
-  margin: 20px 0;
-}
-
-.modal-default-button {
-  float: right;
-}
-
-</style>
