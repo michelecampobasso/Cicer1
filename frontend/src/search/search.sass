@@ -1,33 +1,29 @@
+@import "../main/app"
+
 .section_title
     width: 100%
     margin-top: 20px
 
 #search
     .gps
-        cursor: pointer
-        padding: 5px 10px
-        max-width: 280px
-        margin: 0 auto
-        margin-top: 30px
-        border-radius: 10px
-        background-color: #f2f2f2
-        &:hover
-            background-color: #e2e2e2
-        &:active
-            background-color: #d2d2d2
+        @extend .button-empty
 
     .city-input
         max-width: 400px
         margin: 0 auto
-        margin-top: 20px
+        margin-top: 30px
         padding: 0 20px
 
         .city-suggestions
             font-size: 16px
             position: absolute
-            width: 100%
+            max-width: 400px
+            position: absolute;
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
             z-index: 2
-            left: 0
             padding: 0 20px
             
             ul
@@ -46,25 +42,21 @@
                         
     .trip-length-container
         display: flex
-        display: -webkit-flex
         flex-wrap: wrap
-        -webkit-flex-wrap: wrap
         max-width: 450px
         margin: 0 auto
         justify-content: center
-        text-align: center
 
-        .length            
+        .length-container
+            display: flex
+            flex-wrap: wrap
+            flex-direction: row        
             cursor: pointer
-            background-color: #f2f2f2
+            border: 2px solid $color-2
+            border-radius: 10px
+            
+        .length
             padding: 0.3em 1em
-            &:hover
-                background-color: #e2e2e2
-            &:active
-                background-color: #d2d2d2
-                
-        .selected
-            background-color: #e2e2e2
 
     .category-container
         display: flex
@@ -75,32 +67,18 @@
         justify-content: center
         
         .category
-            cursor: pointer
-            text-align: center;
-            background-color: #f2f2f2
+            @extend .button-empty
             margin: 10px 5px
             padding: 5px 15px
-            border-radius: 5px
-            &:hover
-                background-color: #e2e2e2
-            &:active
-                background-color: #d2d2d2
-
-        .selected
-            background-color: #d2d2d2
 
     .cta-buttons-container
         margin-top: 20px
         .cta-button
-            cursor: pointer
-            padding: 10px 20px
-            border-radius: 10px
-            background-color: #f2f2f2
-            margin: 20px auto
-            max-width: 280px
-            &:hover
-                background-color: #e2e2e2
-            &:active
-                background-color: #d2d2d2
-
-    
+            @extend .button-full
+            margin: 5px auto
+            
+        .cta-1, .cta-1:active
+            background-color: $color-cta
+            
+        .cta-2, .cta-2:active
+            background-color: $color-cta2

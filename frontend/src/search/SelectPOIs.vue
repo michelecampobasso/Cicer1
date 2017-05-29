@@ -1,6 +1,9 @@
 <template>
   <div id="selectpois">
     <div class="pois-container">
+      <span>Queste sono le attrazioni che Cicerone ha scelto per te</span>
+      <br>
+      <span>Premi su di esse per includerle o meno nella lista</span>
       <div v-for="poi in pois" v-bind:class="[poi.is_selected ? 'selected' : '', 'poi']" @click="clickOnPoi(poi.id_cicer1)">
           <div class="left">
             <div class="name">
@@ -11,16 +14,18 @@
             </span>
           </div>
           <div class="right">
-            <div class="rating">
-              {{poi.rating}} ⭐️
-            </div>
             <div class="popularity">
-              {{poi.popularity}} ✔️
+              {{poi.popularity}} <i class="material-icons" style="font-size: 18px">thumb_up</i>️
+            </div>
+            <div class="rating">
+              {{poi.rating}} <i class="material-icons" style="font-size: 18px">star</i>
             </div>
           </div>
       </div>
       <div class="cta-buttons-container">
-        <div  @click="goToMap()" class="cta-button">🔎 Vai alla mappa</div>
+        <div  @click="goToMap()" class="cta-button">
+          <i class="material-icons">search</i> Vai alla mappa
+        </div>
       </div>
     </div>
   </div>
