@@ -1,8 +1,14 @@
 <template>
 <div id="main">
   <modal :modalData="modalData" v-if="showModalPoi" @close="showModalPoi = false">
-    <div slot="header">{{modalData.name}} - Piaciuto {{modalData.likes}} volte</div>
-    <div  v-html="modalData.body" slot="body"></div>
+    <div slot="header">{{modalData.name}}</div>
+    <div class="m-body" v-html="modalData.body" slot="body"></div>
+    <div class="m-tags" slot="tags">
+      <ul id="tagList">
+        <li v-for="tag in modalData.tags"> {{tag.name}} - {{tag.value}}</li>
+      </ul>
+    </div>
+    <div class="m-likes" slot="likes">Piaciuto {{modalData.likes}}</div>
   </modal>
   <modalTag :currentPoi="currentPoi" :tags="tags" v-if="showModalTag" @close="showModalTag = false">
     <div slot="t-header">Aggiungi tag per {{currentPoi.properties.nome}}</div>
@@ -49,9 +55,14 @@
           <div class="modal-header">
             <slot id="m-header" name="header"/>
           </div>
+            
+          <slot id="m-body" name="body"/>
 
-          <div class="modal-body">
-            <slot id="m-body" name="body"/>
+          <div class="lower"> 
+          <div class="modal-tags">
+            <slot id="tags" name="tags"/>
+          </div>
+            <slot id="likes" name="likes"/>
           </div>
 
           
@@ -125,7 +136,8 @@ export default {
     control.style.display = "block";
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
     var start; 
-    if(Object.keys(this.gps).length == 0){
+    console.log(Object.keys(this.gps.coordinates).length)
+    if(Object.keys(this.gps.coordinates).length == 0){
       var firstPoint = new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]);
       start = 1
     } else {
@@ -135,7 +147,6 @@ export default {
           map: map,
           label: '🐱'
       });
-      console.log("o");
       start = 0
     }
 
@@ -190,7 +201,6 @@ export default {
         temp_tags[i] = {'id' : i, 'name' : keys[i], 'selected' : false }
       }
       this.tags.list = temp_tags;
-      //console.log(JSON.stringify(this.tags.list));
   },
   showList : function() {
     document.getElementById("list").style.display='flex';
@@ -206,11 +216,17 @@ export default {
     var self = this
     this.modalData.name = item.properties.nome
     this.modalData.likes = item.popularity
-    this.modalData.tags = item.tags
+    this.modalData.tags = [];
+    for(var i = 0; i < Object.keys(item.tags).length; i++){
+      var tag = {};
+      tag.name = Object.keys(item.tags)[i]
+      tag.value = item.tags[tag.name]
+      this.modalData.tags.push(tag);    
+      console.log(this.modalData.tags[i]);
+    }
     this.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + item.properties.nome +  ' &inprop=url&intestactions=&origin=*').then(response => {
           var json = JSON.parse(JSON.stringify(response.body));
           var id = Object.keys(response.body.query.pages)[0];
-          console.log("ciao");
           if(id != -1){
             var object =  json["query"]["pages"][id];
             //url = object["canonicalurl"];
