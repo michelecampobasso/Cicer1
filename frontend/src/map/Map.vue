@@ -1,5 +1,5 @@
 <template>
-<div id="main" role="principale">
+<div id="main" role="main">
   <modal :modalData="modalData" v-if="showModalPoi" @close="showModalPoi = false">
     <div slot="header">{{modalData.name}}</div>
     <div class="m-tags" slot="tags">
@@ -27,7 +27,7 @@
 
   <div id="container">
     <div id="map"></div>
-  <div id="tabContainer" role="navigazione">
+  <div id="tabContainer" role="navigation">
     <button id="showList" v-bind:class="[poiTab ? 'selected' : '', 'tab']" v-on:click="showList" tabindex="1">Punti di interesse</button>
     <button id="showInst" v-bind:class="[!poiTab ? 'selected' : '', 'tab']" v-on:click="showInst" tabindex="2">Indicazioni </button>
   </div>

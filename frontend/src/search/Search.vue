@@ -1,13 +1,13 @@
     <template>
-      <div id="search" role="principale">
+      <div id="search" role="main">
         <div v-bind:class="[use_gps ? 'selected' : '', 'gps']" @click="fetchGeolocation()" tabindex="1">
              <i class="material-icons">{{gps_icon}}</i> {{ location_msg }}
         </div>
         
-        <div class="city-input" role="cerca">
+        <div class="city-input" role="search">
           <md-input-container>
             <label>Città:</label>
-            <md-input class="city-input-form" v-model="city" placeholder="Seleziona la città da visitare" tabindex="2"></md-input>
+            <md-input class="city-input-form" v-model="city" placeholder="Seleziona la città da visitare" tabindex="2" label="Cerca"></md-input>
           </md-input-container> 
           <div class="city-suggestions">
             <ul>
@@ -36,7 +36,7 @@
           </div>
         </div>
 
-        <div class="cta-buttons-container" v-if="city_selected != '' || city_with_gps != ''" role="navigazione">
+        <div class="cta-buttons-container" v-if="city_selected != '' || city_with_gps != ''" role="navigation">
           <div  @click="searchPOI('/map')" class="cta-button cta-1" tabindex="6">
             <i class="material-icons">search</i> Vai alla mappa
           </div>
