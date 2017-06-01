@@ -1,17 +1,17 @@
     <template>
-      <div id="search">
-        <div v-bind:class="[use_gps ? 'selected' : '', 'gps']" @click="fetchGeolocation()">
+      <div id="search" role="main">
+        <div v-bind:class="[use_gps ? 'selected' : '', 'gps']" @click="fetchGeolocation()" tabindex="1">
              <i class="material-icons">{{gps_icon}}</i> {{ location_msg }}
         </div>
         
-        <div class="city-input">
+        <div class="city-input" role="search">
           <md-input-container>
             <label>Città:</label>
-            <md-input class="city-input-form" v-model="city" placeholder="Seleziona la città da visitare"></md-input>
+            <md-input class="city-input-form" v-model="city" placeholder="Seleziona la città da visitare" tabindex="2"></md-input>
           </md-input-container> 
           <div class="city-suggestions">
             <ul>
-              <li v-for="city_suggestion in city_suggestions" v-bind:value="city_suggestion" @click="selectCity(city_suggestion)">
+              <li v-for="city_suggestion in city_suggestions" v-bind:value="city_suggestion" @click="selectCity(city_suggestion)" tabindex="3">
                 {{ city_suggestion }}
               </li>
             </ul>
@@ -22,7 +22,7 @@
           <span class="section_title">Quanto tempo hai a disposizione?</span>
           <div class="length-container">
             <div v-for="duration in durations">
-              <div v-bind:class="[duration.is_selected ? 'selected' : '', 'length']" @click="selectTripLength(duration)">
+              <div v-bind:class="[duration.is_selected ? 'selected' : '', 'length']" @click="selectTripLength(duration)" tabindex="4">
                 {{duration.string}}
               </div>
             </div>
@@ -31,16 +31,16 @@
 
         <div class="category-container">
           <span class="section_title">Cosa ti interessa di più?</span>
-          <div v-for="category in categories" v-bind:class="[category.is_selected ? 'selected' : '', 'category']" @click="selectCategory(category.cat_id)">
+          <div v-for="category in categories" v-bind:class="[category.is_selected ? 'selected' : '', 'category']" @click="selectCategory(category.cat_id)" tabindex="5">
               {{category.cat_string_short}} {{category.cat_emoji}} 
           </div>
         </div>
 
-        <div class="cta-buttons-container" v-if="city_selected != '' || city_with_gps != ''">
-          <div  @click="searchPOI('/map')" class="cta-button cta-1">
+        <div class="cta-buttons-container" v-if="city_selected != '' || city_with_gps != ''" role="navigation">
+          <div  @click="searchPOI('/map')" class="cta-button cta-1" tabindex="6">
             <i class="material-icons">search</i> Vai alla mappa
           </div>
-          <div @click="searchPOI('/search/manual')" class="cta-button cta-2">
+          <div @click="searchPOI('/search/manual')" class="cta-button cta-2" tabindex="7">
             <i class="material-icons">filter_list</i> Filtra a mano
           </div>
         </div>

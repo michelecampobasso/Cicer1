@@ -1,5 +1,5 @@
 <template>
-<div id="main">
+<div id="main" role="main">
   <modal :modalData="modalData" v-if="showModalPoi" @close="showModalPoi = false">
     <div slot="header">{{modalData.name}}</div>
     <div class="m-tags" slot="tags">
@@ -17,29 +17,33 @@
     <div slot="t-header">Aggiungi tag per {{currentPoi.properties.nome}}</div>
     <div slot="t-body">
       <ul class="tagList">
-        <li v-for="tag in tags.list" @click="selectTag(tag)" v-bind:class="[tag.selected ? 'selected-tag' : '', '']">{{tag.name}}&nbsp;<i class="material-icons">{{tag.icon}}</i></li>
+        <li v-for="tag in tags.list" @click="selectTag(tag)" v-bind:class="[tag.selected ? 'selected-tag' : '', 'tag-button']" tabindex="1">
+          {{tag.name}}&nbsp;<i class="material-icons">{{tag.icon}}</i>
+        </li>
       </ul>
-      <button @click="updateTags()">Conferma</button>
+      <button @click="updateTags()" tabindex="2">Conferma</button>
     </div>
   </modalTag>
 
   <div id="container">
     <div id="map"></div>
-     <div id="tabContainer">
-    <button id="showList" v-bind:class="[poiTab ? 'selected' : '', 'tab']" v-on:click="showList">Punti di interesse</button>
-    <button id="showInst" v-bind:class="[!poiTab ? 'selected' : '', 'tab']" v-on:click="showInst">Indicazioni </button>
-    </div>
+  <div id="tabContainer" role="navigation">
+    <button id="showList" v-bind:class="[poiTab ? 'selected' : '', 'tab']" v-on:click="showList" tabindex="1">Punti di interesse</button>
+    <button id="showInst" v-bind:class="[!poiTab ? 'selected' : '', 'tab']" v-on:click="showInst" tabindex="2">Indicazioni </button>
+  </div>
     <div id="list"> 
       <ul>
-      <li class="poiItem" v-for="(item, index) in poilist.list" >
+      <li class="poiItem" v-for="(item, index) in poilist.list" tabindex="3">
         <p @click="showDetails(item)">{{item.properties.nome}} </p>
-        <button @click="addLike(index, item, true)">
+        <button @click="addLike(index, item, true)" tabindex="3">
           <i class="material-icons" style="font-size: 18px; color: white; margin: 10px">thumb_up</i>️
         </button>
-        <button @click="addLike(index, item, false)">
+        <button @click="addLike(index, item, false)" tabindex="3">
           <i class="material-icons" style="font-size: 18px; color: white; margin: 10px">thumb_down</i>️
         </button>
-        <button @click="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px">Aggiungi tag</button>
+        <button @click="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="3">
+          Aggiungi tag
+        </button>
       </li>   
       </ul>
     </div>
