@@ -15,10 +15,10 @@
           </div>
           <div class="right">
             <div class="popularity">
-              {{poi.popularity}} <i class="material-icons" style="font-size: 18px">thumb_up</i>️
+              {{poi.popularity}} <i class="material-icons" style="font-size: 18px; //color: #2870EA">thumb_up</i>️
             </div>
             <div class="rating">
-              {{poi.rating}} <i class="material-icons" style="font-size: 18px">star</i>
+              {{poi.rating}} <i class="material-icons" style="font-size: 18px; //color: #FEC654">star</i>
             </div>
           </div>
       </div>

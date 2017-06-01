@@ -1,116 +1,159 @@
+@import "../main/app"
+
+button
+    padding: 0;
+    border: none;
+    background: none;
+    color: white
+    font-family: $font-bold
+    cursor: pointer
+
 #main
-    position : relative;
-    width : 100%;
-    height : 100%;
+    position : relative
+    width : 100%
+    height : 100%
 
 #container
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;   
-    padding-top : 2%; 
-    width : 100%;
-    height : 100%;
+    display: flex
+    flex-direction: column
+    top: -5px 
+    width : 100%
+    height : 100%
 
-#map
-    width : 100%;
-    height : 50%;
+    #map
+        width : 100%
+        height : 50%
 
-#tabContainer
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: row;
-    flex-direction: row;
+    #tabContainer
+        @extend .shadow
+        display: flex
+        flex-direction: row
+        border: 2px solid $color-2
+        border-radius: 5px
+        height: 35px
+        margin: 5px
 
-.tab
-    width : 50%;
+        .tab
+            color: $color-text-dark
+            font-size: 16px
+            text-transform: uppercase
+            width : 50%
 
-#tagList
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
+        .selected
+            background-color: $color-2
 
-.poiItem 
-    width : 100%;
-    background-color : #e2e2e2;
+    #list
+        display: flex
+        flex-direction: column 
+        width : 100% 
+        height : 50%
+        position : absolute
+        overflow-y: scroll
+        margin: 0 auto
+        padding: 0 20px
+        color: white
 
-#instructions
-    position : absolute;
-    display : none;
-    width : 100% 
-    height : 50%
-    overflow-y: scroll;
+        .poiItem 
+            @extend .shadow
+            cursor: pointer
+            width : 100%
+            border: 2px solid $color-2
+            border-radius: 10px
+            background-color: $color-2 !important
+            padding: 10px 15px
+            text-align: start
+            margin: 10px auto
+            font-size: 20px
+            line-height: 30px
 
-#list
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column; 
-    width : 100% 
-    height : 40%
-    position : absolute;
-    overflow-y: scroll;
+    #instructions
+        position : absolute
+        display : none
+        width : 100% 
+        height : 50%
+        overflow-y: scroll
 
 .adp-directions 
     width : 100%
 
 .modal-mask  
-  position: fixed;
-  z-index: 9998;
+  position: fixed
+  z-index: 5
   top: 0
-  left : 0
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, .5);
-  display: table;
-  transition: opacity .3s ease;
+  left: 0
+  width: 100%
+  height: 100%
+  background-color: rgba(0, 0, 0, .5)
+  display: table
+  transition: opacity .3s ease
  
 .modal-container 
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;  
-    width: 60%;
+    display: flex
+    flex-direction: column  
+    max-width: 600px
     height : 10% 
     max-height : 700px
-    margin: 2% auto;
-    padding: 2% 3%;
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-    transition: all .3s ease;
-    font-family: Helvetica, Arial, sans-serif;
+    margin: 2% auto
+    padding: 2% 3%
+    background-color: #fff
+    border-radius: 2px
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .33)
+    transition: all .3s ease
+    line-height: 24px    
  
+.tagList
+    display: flex
+    flex-direction: row
+    flex-wrap: wrap
+    justify-content: center
+    text-transform: capitalize
 
-.modal-header 
-  margin-top: 0;
-  font-size : 180%
+    li
+        padding: 0
+        margin: 5px 15px
+        line-height: 40px
+
+    .selected-tag
+        color: $color-2
+
+.modal-header
+    font-size: 24px
+    text-transform: uppercase
+    margin-bottom: 12px
+
+.m-header 
+  margin-top: 0
+  font-size: 30px
+  margin-bottom: 30px
 
 .lower
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: row;
-    flex-direction: row; 
+    display: flex
+    flex-direction: row 
     width : 100%
     height : 40% 
-
-.modal-tags
-    width : 50%
-    height : 100%
-    background-color : blue
-  
+    justify-content: center
+    margin-bottom: 20px
+    
 .m-likes
-    width : 50%
-    height : 100%
-    background-color : red
+    float: left
+    margin-top: 15px
+    margin-left: 12px
+    margin-right: 12px
 
 .m-body 
-    background-color: #E2E2E2
+    margin-top: 20px
     height : 40%
     width : 100%
     overflow-y : scroll 
 
+.modal-body
+    button
+        margin-top: 20px
+        font-size: 20px
+        text-transform: uppercase
+        color: $color-text-dark
+        z-index: 100
+
 .modal-default-button  
-  float: right;
+  float: right
  

@@ -2,41 +2,48 @@
 <div id="main">
   <modal :modalData="modalData" v-if="showModalPoi" @close="showModalPoi = false">
     <div slot="header">{{modalData.name}}</div>
-    <div class="m-body" v-html="modalData.body" slot="body"></div>
     <div class="m-tags" slot="tags">
-      <ul id="tagList">
-        <li v-for="tag in modalData.tags"> {{tag.name}} - {{tag.value}}</li>
+    <div class="m-likes" slot="likes">
+     <i class="material-icons" style="font-size: 18px; color: black;">thumb_up</i>️ {{modalData.likes}}
+    </div>
+      <ul class="tagList">
+        <li v-for="tag in modalData.tags"><i class="material-icons">{{tag.icon}}</i> {{tag.value}}</li>
       </ul>
     </div>
-    <div class="m-likes" slot="likes">Piaciuto {{modalData.likes}}</div>
+    <div class="m-body" v-html="modalData.body" slot="body"></div>
   </modal>
+
   <modalTag :currentPoi="currentPoi" :tags="tags" v-if="showModalTag" @close="showModalTag = false">
     <div slot="t-header">Aggiungi tag per {{currentPoi.properties.nome}}</div>
     <div slot="t-body">
-      <ul>
-      <li v-for="tag in tags.list" @click="selectTag(tag)" >{{tag.name}}</li>
+      <ul class="tagList">
+        <li v-for="tag in tags.list" @click="selectTag(tag)" v-bind:class="[tag.selected ? 'selected-tag' : '', '']">{{tag.name}}&nbsp;<i class="material-icons">{{tag.icon}}</i></li>
       </ul>
       <button @click="updateTags()">Conferma</button>
     </div>
   </modalTag>
+
   <div id="container">
     <div id="map"></div>
      <div id="tabContainer">
-    <button id="showList" class="tab" v-on:click="showList">Punti di interesse</button>
-    <button id="showInst" class="tab" v-on:click="showInst">Indicazioni </button>
+    <button id="showList" v-bind:class="[poiTab ? 'selected' : '', 'tab']" v-on:click="showList">Punti di interesse</button>
+    <button id="showInst" v-bind:class="[!poiTab ? 'selected' : '', 'tab']" v-on:click="showInst">Indicazioni </button>
     </div>
     <div id="list"> 
       <ul>
       <li class="poiItem" v-for="(item, index) in poilist.list" >
         <p @click="showDetails(item)">{{item.properties.nome}} </p>
-        <button @click="addLike(index, item, true)">👍🏻</button>
-        <button @click="addLike(index, item, false)">👎🏻</button>
-        <button @click="openModalTag(item, index)">Aggiungi tag</button>
+        <button @click="addLike(index, item, true)">
+          <i class="material-icons" style="font-size: 18px; color: white; margin: 10px">thumb_up</i>️
+        </button>
+        <button @click="addLike(index, item, false)">
+          <i class="material-icons" style="font-size: 18px; color: white; margin: 10px">thumb_down</i>️
+        </button>
+        <button @click="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px">Aggiungi tag</button>
       </li>   
       </ul>
     </div>
     <div id="instructions"></div>
-    
   </div>
 
   <script type="text/x-template" id="modal-template">
@@ -44,27 +51,27 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
+       
         <div class="modal-footer">
             <slot name="footer">
               <button class="modal-default-button" @click="$emit('close')">
-                X
+                <i class="material-icons" style="color: black">close</i>
               </button>
             </slot>
           </div>
-
+          
           <div class="modal-header">
             <slot id="m-header" name="header"/>
           </div>
-            
-          <slot id="m-body" name="body"/>
 
           <div class="lower"> 
-          <div class="modal-tags">
-            <slot id="tags" name="tags"/>
-          </div>
-            <slot id="likes" name="likes"/>
+            <slot name="likes"/>
+            <div class="modal-tags">
+              <slot name="tags"/>
+            </div>
           </div>
 
+          <slot id="m-body" name="body"/>
           
         </div>
       </div>
@@ -80,7 +87,7 @@
         <div class="modal-footer">
             <slot name="t-footer">
               <button class="modal-default-button" @click="$emit('close')">
-                X
+                <i class="material-icons" style="color: black">close</i>
               </button>
             </slot>
           </div>
@@ -107,6 +114,7 @@ export default {
   name: 'main',
   data () {
     return {
+      poiTab: true,
       showModalPoi: false,      
       showModalTag: false,
       currentPoi : [],
@@ -199,14 +207,21 @@ export default {
       var temp_tags = []
       for(var i = 0; i < keys.length; i++){      
         temp_tags[i] = {'id' : i, 'name' : keys[i], 'selected' : false }
+        if (temp_tags[i].name == "wifi") temp_tags[i].icon = "wifi"
+        else if (temp_tags[i].name == "bambini") temp_tags[i].icon = "child_friendly"
+        else if (temp_tags[i].name == "disabili") temp_tags[i].icon = "accessible"
+        else if (temp_tags[i].name == "visita guidata") temp_tags[i].icon = "live_help"
+        else if (temp_tags[i].name == "silenzio") temp_tags[i].icon = "volume_off"
       }
       this.tags.list = temp_tags;
   },
   showList : function() {
+    this.poiTab = true
     document.getElementById("list").style.display='flex';
     document.getElementById("instructions").style.display='none';
   },
   showInst : function() {
+    this.poiTab = false
     document.getElementById("list").style.display='none';
     document.getElementById("instructions").style.display='block';
   },
@@ -221,6 +236,11 @@ export default {
       var tag = {};
       tag.name = Object.keys(item.tags)[i]
       tag.value = item.tags[tag.name]
+      if (tag.name == "wifi") tag.icon = "wifi"
+        else if (tag.name == "bambini") tag.icon = "child_friendly"
+        else if (tag.name == "disabili") tag.icon = "accessible"
+        else if (tag.name == "visita guidata") tag.icon = "live_help"
+        else if (tag.name == "silenzio") tag.icon = "volume_off"
       this.modalData.tags.push(tag);    
       console.log(this.modalData.tags[i]);
     }
