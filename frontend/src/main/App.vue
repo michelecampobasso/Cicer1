@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="header" role="banner">
+    <div class="header" role="intestazione">
       <router-link to="/"><img src="../assets/cicer1icon.png" class="icon" alt="cicerone logo"/></router-link>
       <p class="title">Cicerone</p>
       <p class="subtitle">La guida per i tuoi viaggi</p>

@@ -1,5 +1,5 @@
 <template>
-  <div id="selectpois" role="main">
+  <div id="selectpois" role="principale">
     <div class="pois-container">
       <span>Queste sono le attrazioni che Cicerone ha scelto per te</span>
       <br>
@@ -23,7 +23,7 @@
           </div>
       </div>
       <div class="cta-buttons-container">
-        <div  @click="goToMap()" class="cta-button" tabindex="2" role="navigation">
+        <div  @click="goToMap()" class="cta-button" tabindex="2" role="navigazione">
           <i class="material-icons">search</i> Vai alla mappa
         </div>
       </div>
