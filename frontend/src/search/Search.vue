@@ -192,7 +192,7 @@
               console.log(response)
               if (response.body.length == 0) {
                 this.city = ""
-                this.location_msg = "(vaffanculo non sei in romagna)"
+                this.location_msg = "Peccato, non sei in Emilia Romagna"
               }
             }, response => {
               console.log("non andato")
