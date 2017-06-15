@@ -35,11 +35,11 @@
       <ul>
       <li class="poiItem" v-for="(item, index) in poilist.list" tabindex="3">
         <p @click="showDetails(item)">{{item.properties.nome}} </p>
-        <button @click="addLike(index, item, true)" tabindex="3">
-          <i class="material-icons" style="font-size: 18px; color: white; margin: 10px">thumb_up</i>️
+        <button id="like-btn" @click="addLike(index, item, true)" tabindex="3">
+          <i id="like-icon" class="material-icons" >thumb_up</i>️
         </button>
-        <button @click="addLike(index, item, false)" tabindex="3">
-          <i class="material-icons" style="font-size: 18px; color: white; margin: 10px">thumb_down</i>️
+        <button id="dislike-btn" @click="addLike(index, item, false)" tabindex="3">
+          <i id="dislike-icon" class="material-icons" >thumb_down</i>️
         </button>
         <button @click="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="3">
           Aggiungi tag
@@ -125,11 +125,8 @@ export default {
     }
   },
   methods: {
-    initMap: function(){
-              
-    if(this.poilist.list.length == 0){
-        //ERRORE
-    }
+    initMap: function(){          
+    
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 17,
         center: new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]),
@@ -148,7 +145,6 @@ export default {
     control.style.display = "block";
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
     var start; 
-    console.log(Object.keys(this.gps.coordinates).length)
     if(Object.keys(this.gps.coordinates).length == 0){
       var firstPoint = new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]);
       start = 1
@@ -157,7 +153,7 @@ export default {
       var markerAs = new google.maps.Marker({
           position: firstPoint,
           map: map,
-          label: '🐱'
+          label: '👤'
       });
       start = 0
     }
@@ -168,7 +164,6 @@ export default {
       var marker = new google.maps.Marker({
           position: latLng,
           map: map,
-          //label: 'A'
       });
       var self = this
       var curr = this.poilist.list[i];
@@ -199,11 +194,15 @@ export default {
           if (status === 'OK') {
             directionsDisplay.set
             directionsDisplay.setDirections(response);
+            google.maps.event.trigger(map, 'resize');
             
           } else {
             window.alert('Directions request failed due to ' + status);
+            this.$router.push('/');
           }
+
         });
+
      
   },
   initTags : function() {
@@ -231,7 +230,6 @@ export default {
   },
 
   showDetails: function(item){
-    console.log(item.properties.nome + " " + item.popularity)
     var self = this
     this.modalData.name = item.properties.nome
     this.modalData.likes = item.popularity
@@ -246,7 +244,6 @@ export default {
         else if (tag.name == "visita guidata") tag.icon = "live_help"
         else if (tag.name == "silenzio") tag.icon = "volume_off"
       this.modalData.tags.push(tag);    
-      console.log(this.modalData.tags[i]);
     }
     this.$http.get('//it.wikipedia.org/w/api.php?action=query&format=json&prop=info|extracts&titles=' + item.properties.nome +  ' &inprop=url&intestactions=&origin=*').then(response => {
           var json = JSON.parse(JSON.stringify(response.body));
@@ -255,42 +252,51 @@ export default {
             var object =  json["query"]["pages"][id];
             //url = object["canonicalurl"];
             var extract = object["extract"];
-            //if(//Inizia con )
             self.modalData.body = extract;
           } else {
             self.modalData.body = "";
           }
+          this.showModalPoi = true;  
 
       });
-    this.showModalPoi = true;  
     }, 
   addLike : function(index, item, liked){
     var url = "http://138.68.79.145:3000/popularity"
     var post = {}
+    var likeicon = document.getElementById("like-icon")
+    var dislikeicon = document.getElementById("dislike-icon")
     post.collection_name = "poi"
     post.id = item.id   
+    if(liked){
+        likeicon.style.color = "green"
+        dislikeicon.style.color = "white"
+        document.getElementById("like-btn").disabled = true;
+        document.getElementById("dislike-btn").disabled = false;
+
+    } else {
+        dislikeicon.style.color = "red"
+        likeicon.style.color = "white"
+        document.getElementById("like-btn").disabled = false;
+        document.getElementById("dislike-btn").disabled = true;
+    }
     var like = liked ? 1 : -1 
     post.rating = like
-    console.log(post)
     this.$http.post(url, post, {
       headers: {
             'Content-Type': 'application/json'
             }
      }).then(response => {
-            console.log("ok")
      }, response => {});
      this.poilist.list[index].popularity += like;
   },
   selectTag : function(tag){
     this.tags.list[tag.id].selected = !this.tags.list[tag.id].selected
-    console.log(this.tags.list[tag.id].selected);
   },
   updateTags : function(){
     var url = "http://138.68.79.145:3000/tags"
     var post = {}
     post.collection_name = "poi"
     post.id = this.currentPoi.id   
-    console.log("ma?")
     for(var i = 0; i < Object.keys(this.tags.list).length; i++ ){ 
       if(this.tags.list[i].selected){
         var name = this.tags.list[i].name
@@ -300,7 +306,6 @@ export default {
             'Content-Type': 'application/json'
             }
           }).then(response => {
-            console.log("ok")
           }, response => {
           });
         this.poilist.list[this.currentPoi.index].tags[name] += 1;
@@ -312,14 +317,19 @@ export default {
       this.showModalTag = true;
       this.currentPoi = item;
       this.currentPoi.index = index
-      console.log("OH" + JSON.stringify(this.currentPoi.tags))
     }
   },
   mounted() {
-        this.initMap()
+    if(this.poilist.list.length == 0){
+        this.$router.push('/');
+    } else {
+      this.initTags()   
+      this.initMap()
+
+    }
   }, 
   created() {
-    this.initTags()   
+    
   }
 }
 </script>
