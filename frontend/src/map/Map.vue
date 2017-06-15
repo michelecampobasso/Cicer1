@@ -35,11 +35,11 @@
       <ul>
       <li class="poiItem" v-for="(item, index) in poilist.list" tabindex="3">
         <p @click="showDetails(item)">{{item.properties.nome}} </p>
-        <button id="like-btn" @click="addLike(index, item, true)" tabindex="3">
-          <i id="like-icon" class="material-icons" >thumb_up</i>️
+        <button v-bind:id="['like-btn' + index]" @click="addLike(index, item, true)" tabindex="3">
+          <i v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'material-icons']" >thumb_up</i>️
         </button>
-        <button id="dislike-btn" @click="addLike(index, item, false)" tabindex="3">
-          <i id="dislike-icon" class="material-icons" >thumb_down</i>️
+        <button v-bind:id="['dislike-btn' + index]" @click="addLike(index, item, false)" tabindex="3">
+          <i  v-bind:class="[item.liked == -1 ? 'selected-dislike' : '', 'material-icons']" >thumb_down</i>️
         </button>
         <button @click="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="3">
           Aggiungi tag
@@ -266,20 +266,17 @@ export default {
     var likeicon = document.getElementById("like-icon")
     var dislikeicon = document.getElementById("dislike-icon")
     post.collection_name = "poi"
-    post.id = item.id   
-    if(liked){
-        likeicon.style.color = "green"
-        dislikeicon.style.color = "white"
-        document.getElementById("like-btn").disabled = true;
-        document.getElementById("dislike-btn").disabled = false;
-
+    post.id = item.id
+    console.log("liked item n " + index + " " + liked)    
+    if (liked){
+      document.getElementById("dislike-btn" + index).disabled = false;
+      document.getElementById("like-btn" + index).disabled = true;
     } else {
-        dislikeicon.style.color = "red"
-        likeicon.style.color = "white"
-        document.getElementById("like-btn").disabled = false;
-        document.getElementById("dislike-btn").disabled = true;
+      document.getElementById("dislike-btn" + index).disabled = true;
+      document.getElementById("like-btn" + index).disabled = false;
     }
     var like = liked ? 1 : -1 
+    this.poilist.list[index].liked = like;
     post.rating = like
     this.$http.post(url, post, {
       headers: {
