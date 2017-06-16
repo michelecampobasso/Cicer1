@@ -155,23 +155,23 @@
         fetchGeolocation: function() {
           this.use_gps = !this.use_gps
           if (this.use_gps == true) {
-            this.position.longitude = 11.332179
-            this.position.latitude = 44.497449 
-            this.reverseCoord(this.position)
-            this.location_msg = "Sto usando la tua posizione"
-            // if(navigator.geolocation){
-            //   this.location_msg = "🔎 Ti sto cercando..."
-            //   navigator.geolocation.getCurrentPosition(position => {
-            //     this.location_msg = "👌 Sto usando la tua posizione"
-            //     this.position.longitude = position.coords.longitude
-            //     this.position.latitude = position.coords.latitude
-            //     this.reverseCoord(this.position)
-            //   }, position => {
-            //       this.location_msg = "C'è stato un problema"
-            //   }, {maximumAge:100000, timeout:10000, enableHighAccuracy:true})
-            // } else {
-            //   this.location_msg = "😐 Funzionalità non supportata"
-            // }
+            // this.position.longitude = 11.332179
+            // this.position.latitude = 44.497449 
+            // this.reverseCoord(this.position)
+            // this.location_msg = "Sto usando la tua posizione"
+            if(navigator.geolocation){
+              this.location_msg = "🔎 Ti sto cercando..."
+              navigator.geolocation.getCurrentPosition(position => {
+                this.location_msg = "👌 Sto usando la tua posizione"
+                this.position.longitude = position.coords.longitude
+                this.position.latitude = position.coords.latitude
+                this.reverseCoord(this.position)
+              }, position => {
+                  this.location_msg = "C'è stato un problema"
+              }, {maximumAge:100000, timeout:10000, enableHighAccuracy:true})
+            } else {
+              this.location_msg = "😐 Funzionalità non supportata"
+            }
           } else {
             this.location_msg = "🌏 Usa la tua posizione"
             this.position.longitude = ""
