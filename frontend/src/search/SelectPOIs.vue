@@ -50,8 +50,6 @@ export default {
       this.pois = JSON.parse(JSON.stringify(this.pois_temp))
     },
     clickOnPoi: function(poi_id) {
-      console.log("cioane " + poi_id)
-      console.log(poi_id, this.pois[poi_id].is_selected, !this.pois[poi_id].is_selected)
       this.pois[poi_id].is_selected = !this.pois[poi_id].is_selected
     },
     goToMap: function() {

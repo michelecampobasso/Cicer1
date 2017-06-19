@@ -155,23 +155,23 @@
         fetchGeolocation: function() {
           this.use_gps = !this.use_gps
           if (this.use_gps == true) {
-            this.position.longitude = 11.332179
-            this.position.latitude = 44.497449 
-            this.reverseCoord(this.position)
-            this.location_msg = "Sto usando la tua posizione"
-            // if(navigator.geolocation){
-            //   this.location_msg = "🔎 Ti sto cercando..."
-            //   navigator.geolocation.getCurrentPosition(position => {
-            //     this.location_msg = "👌 Sto usando la tua posizione"
-            //     this.position.longitude = position.coords.longitude
-            //     this.position.latitude = position.coords.latitude
-            //     this.reverseCoord(this.position)
-            //   }, position => {
-            //       this.location_msg = "C'è stato un problema"
-            //   }, {maximumAge:100000, timeout:10000, enableHighAccuracy:true})
-            // } else {
-            //   this.location_msg = "😐 Funzionalità non supportata"
-            // }
+            // this.position.longitude = 11.332179
+            // this.position.latitude = 44.497449 
+            // this.reverseCoord(this.position)
+            // this.location_msg = "Sto usando la tua posizione"
+            if(navigator.geolocation){
+              this.location_msg = "🔎 Ti sto cercando..."
+              navigator.geolocation.getCurrentPosition(position => {
+                this.location_msg = "👌 Sto usando la tua posizione"
+                this.position.longitude = position.coords.longitude
+                this.position.latitude = position.coords.latitude
+                this.reverseCoord(this.position)
+              }, position => {
+                  this.location_msg = "C'è stato un problema"
+              }, {maximumAge:100000, timeout:10000, enableHighAccuracy:true})
+            } else {
+              this.location_msg = "😐 Funzionalità non supportata"
+            }
           } else {
             this.location_msg = "🌏 Usa la tua posizione"
             this.position.longitude = ""
@@ -179,8 +179,6 @@
           }
         },
         reverseCoord: function(position) {
-          console.log("chiamata reverseCoord con coord ")
-          console.log(position.longitude, position.latitude)
           var url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + position.latitude + "," + position.longitude
           this.$http.get(url).then(response => {
 
@@ -189,14 +187,11 @@
 
             var url = "http://138.68.79.145:3000/city/poi/" + this.city
             this.$http.get(url, { 'Access-Control-Allow-Origin': true }).then(response => {
-              console.log(response)
               if (response.body.length == 0) {
                 this.city = ""
                 this.location_msg = "Peccato, non sei in Emilia Romagna"
               }
             }, response => {
-              console.log("non andato")
-              console.log(response)
             })
           }, response => {
           });
@@ -213,8 +208,6 @@
                 this.city_suggestions = response.body
               }
             }, response => {
-              console.log("non andato")
-              console.log(response)
             })
           }
         }, 500),
@@ -223,13 +216,9 @@
           this.city_suggestions = []
           var url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + city_string
           this.$http.get(url).then(response => {
-            console.log(response)
-            // console.log(response.body.results[0])
             this.position.longitude = response.body.results[0].geometry.location.lng
             this.position.latitude = response.body.results[0].geometry.location.lat
-            console.log(this.position)
           }, response => {
-            console.log("mica trovato " + this.city)            
           });
         },
         searchPOI: function(address) {
@@ -247,14 +236,10 @@
           }
           post.coordinates = [this.position.latitude, this.position.longitude]
           if (this.use_gps) {
-            console.log(post.coordinates)
-            console.log(this.gps)
             this.gps.coordinates = this.position
           }
           post.radius = 1000
           post.max_results = this.durations[this.picked_duration].value
-          // console.log(post)
-          console.log(post)
           this.$http.post(url, post, {
             headers: {
                 'Content-Type': 'application/json'
