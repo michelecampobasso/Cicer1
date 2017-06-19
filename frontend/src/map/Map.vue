@@ -36,7 +36,7 @@
       <li class="poiItem" v-for="(item, index) in poilist.list" tabindex="3">
         <p @click="showDetails(item)">{{item.properties.nome}} </p>
         <button v-bind:id="['like-btn' + index]" @click="addLike(index, item, true)" tabindex="3">
-          <i v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'material-icons']" >thumb_up</i>️
+          <i v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'material-icons']" >thumb_up</i>️ 
         </button>
         <button v-bind:id="['dislike-btn' + index]" @click="addLike(index, item, false)" tabindex="3">
           <i  v-bind:class="[item.liked == -1 ? 'selected-dislike' : '', 'material-icons']" >thumb_down</i>️
@@ -273,6 +273,7 @@ export default {
       document.getElementById("dislike-btn" + index).disabled = true;
       document.getElementById("like-btn" + index).disabled = false;
     }
+    this.$forceUpdate();
     var like = liked ? 1 : -1 
     this.poilist.list[index].liked = like;
     post.rating = like
