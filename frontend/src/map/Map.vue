@@ -3,9 +3,6 @@
   <modal :modalData="modalData" v-if="showModalPoi" @close="showModalPoi = false">
     <div slot="header">{{modalData.name}}</div>
     <div class="m-tags" slot="tags">
-    <div class="m-likes" slot="likes">
-     <i class="material-icons" style="font-size: 18px; color: black;">thumb_up</i>️ {{modalData.likes}}
-    </div>
       <ul class="tagList">
         <li v-for="tag in modalData.tags"><i class="material-icons">{{tag.icon}}</i> {{tag.value}}</li>
       </ul>
@@ -36,11 +33,12 @@
       <li class="poiItem" v-for="(item, index) in poilist.list" tabindex="3">
         <p @click="showDetails(item)">{{item.properties.nome}} </p>
         <button v-bind:id="['like-btn' + index]" @click="addLike(index, item, true)" tabindex="3">
-          <i v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'material-icons']" >thumb_up</i>️ 
+          <i v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'material-icons']" >thumb_up</i>️
         </button>
         <button v-bind:id="['dislike-btn' + index]" @click="addLike(index, item, false)" tabindex="3">
           <i  v-bind:class="[item.liked == -1 ? 'selected-dislike' : '', 'material-icons']" >thumb_down</i>️
         </button>
+        &nbsp; Punteggio: <b>{{item.popularity}}</b>
         <button @click="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="3">
           Aggiungi tag
         </button>
