@@ -114,7 +114,7 @@
 
 <script>
 export default {
-  props: ['poilist', 'modalData', 'gps', 'tags'],  
+  props: ['poilist', 'modalData', 'gps', 'tags', 'map'],  
   name: 'main',
   data () {
     return {
@@ -127,24 +127,32 @@ export default {
   methods: {
     initMap: function(){          
     
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 17,
-        center: new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]),
-        mapTypeId: 'terrain'
-    });
-    
-    var directionsService = new google.maps.DirectionsService;
-    var directionsDisplay = new google.maps.DirectionsRenderer({map: map, suppressMarkers : true});
-    directionsDisplay.setMap(map);
-    directionsDisplay.setPanel(document.getElementById('instructions'));
+    if(this.map.content == null){
+      this.map.content = new google.maps.Map(document.getElementById('map'), {
+          zoom: 17,
+          center: new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]),
+          mapTypeId: 'terrain'
+      });
+      this.map.directionsDisplay = new google.maps.DirectionsRenderer({map: this.map.content, suppressMarkers : true});
+      this.map.directionsDisplay.setMap(this.map.content);
+      this.map.directionsDisplay.setPanel(document.getElementById('instructions'));
+      this.map.directionsService = new google.maps.DirectionsService;
+      this.map.infowindow = new google.maps.InfoWindow();
 
-    var infowindow = new google.maps.InfoWindow();
-    var control = document.getElementById('container');
+    } else {
+      for (var i = 0; i < this.map.markers.length; i++) {
+        this.map.markers[i].setMap(null);
+      }
+      this.map.markers = []
+    }
     var extract;
     var url;
-    control.style.display = "block";
-    map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
     var start; 
+    
+    var control = document.getElementById('container');
+    control.style.display = "block";
+    this.map.content.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
+    
     if(Object.keys(this.gps.coordinates).length == 0){
       var firstPoint = new google.maps.LatLng(this.poilist.list[0].coordinates[1], this.poilist.list[0].coordinates[0]);
       start = 1
@@ -152,20 +160,21 @@ export default {
       var firstPoint = new google.maps.LatLng(this.gps.coordinates.latitude, this.gps.coordinates.longitude);
       var markerAs = new google.maps.Marker({
           position: firstPoint,
-          map: map,
+          map: this.map.content,
           label: '👤'
       });
+      this.map.markers.push(markerAs)
       start = 0
     }
-
+    var self = this
     for (var i = 0; i < this.poilist.list.length; i++) {
       var name = this.poilist.list[i].properties.nome;
       var latLng = new google.maps.LatLng(this.poilist.list[i].coordinates[1], this.poilist.list[i].coordinates[0]);
       var marker = new google.maps.Marker({
           position: latLng,
-          map: map,
+          map: this.map.content,
       });
-      var self = this
+      this.map.markers.push(marker)
       var curr = this.poilist.list[i];
       google.maps.event.addListener(marker, 'click', function(curr) { 
         return function(){
@@ -182,7 +191,7 @@ export default {
       });
     }
     
-    directionsService.route({
+    this.map.directionsService.route({
           origin: firstPoint,
           destination: firstPoint,
           waypoints: waypoints,
@@ -192,8 +201,7 @@ export default {
           // Route the directions and pass the response to a function to create
           // markers for each step.
           if (status === 'OK') {
-            directionsDisplay.setDirections(response);
-            google.maps.event.trigger(map, 'resize')
+            self.map.directionsDisplay.setDirections(response);
           } else {
             window.alert('Directions request failed due to ' + status);
             this.$router.push('/');
@@ -265,7 +273,6 @@ export default {
     var dislikeicon = document.getElementById("dislike-icon")
     post.collection_name = "poi"
     post.id = item.id
-    console.log("liked item n " + index + " " + liked)    
     if (liked){
       document.getElementById("dislike-btn" + index).disabled = false;
       document.getElementById("like-btn" + index).disabled = true;
@@ -322,9 +329,6 @@ export default {
       this.initTags()   
       this.initMap()
     }
-  }, 
-  created() {
-    
   }
 }
 </script>
