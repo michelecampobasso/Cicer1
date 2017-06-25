@@ -5,7 +5,7 @@
       <p class="title">Cicerone</p>
       <p class="subtitle">La guida per i tuoi viaggi</p>
     </div>
-    <router-view :poilist="poilist" :gps="gps" :modalData="modalData" :tags="tags" :map="map"></router-view>
+    <router-view :poilist="poilist" :gps="gps" :modalData="modalData" :tags="tags"></router-view>
   </div>
 </template>
 
@@ -29,13 +29,6 @@ export default {
       tags : {
         list : []
       }, 
-      map : {
-        content : null,
-        directionsDisplay : null,
-        directionsService : null,
-        markers : [],
-        infowindow : null
-      }
     }
   }
 }
