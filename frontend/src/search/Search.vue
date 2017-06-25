@@ -36,7 +36,7 @@
           </div>
         </div>
 
-        <div class="cta-buttons-container" v-if="city_selected != '' || city_with_gps != ''" role="navigation">
+        <div class="cta-buttons-container" v-if="(city_selected != '' || city_with_gps != '') && category_selected" role="navigation">
           <div  @click="searchPOI('/map')" class="cta-button cta-1" tabindex="6">
             <i class="material-icons">search</i> Vai alla mappa
           </div>
@@ -62,6 +62,7 @@
           city: "",
           city_with_gps: "",
           city_selected: "",
+          category_selected: false,
           city_suggestions: [],
           picked_duration: 1,          
           position: {
@@ -151,6 +152,14 @@
         },
         selectCategory: function(category_id) {
           this.categories[category_id].is_selected = !this.categories[category_id].is_selected
+          var found = false;
+          for (var i = 0; i < this.categories.length; i++) {
+            if (this.categories[i].is_selected) {
+              found = true
+              break
+            }
+          }
+          this.category_selected = found
         },
         fetchGeolocation: function() {
           this.use_gps = !this.use_gps
