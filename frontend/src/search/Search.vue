@@ -74,49 +74,49 @@
               cat_string: "Parchi e piazze",
               cat_string_short: "ALL'APERTO",
               cat_emoji: "⛲",
-              is_selected: true
+              is_selected: false
             },
             {
               cat_id: 1,
               cat_string: "Edifici religiosi",
               cat_string_short: "CHIESE",
               cat_emoji: "⛪",
-              is_selected: true
+              is_selected: false
             },
             {
               cat_id: 2,
               cat_string: "Elemento architettonico puntuale",
               cat_string_short: "TORRI",
               cat_emoji: "🗼",
-              is_selected: true
+              is_selected: false
             },
             {
               cat_id: 3,
               cat_string: "Teatri e cinema",
               cat_string_short: "LUDICI",
               cat_emoji: "📽",
-              is_selected: true
+              is_selected: false
             },
             {
               cat_id: 4,
               cat_string: "Strutture rinascimentali e tardo-rinascimentali",
               cat_string_short: "RINASCIMENTALI",
               cat_emoji: "🎨",
-              is_selected: true
+              is_selected: false
             },
             {
               cat_id: 5,
               cat_string: "Strutture medievali",
               cat_string_short: "MEDIEVALI",
               cat_emoji: "🏰",
-              is_selected: true
+              is_selected: false
             },
             {
               cat_id: 6,
               cat_string: "Strutture romane",
               cat_string_short: "ROMANI",
               cat_emoji: "⚔️",
-              is_selected: true
+              is_selected: false
             }
           ],
           durations: [
