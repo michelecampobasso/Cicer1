@@ -10,7 +10,7 @@
     <div class="m-body" v-html="modalData.body" slot="body"></div>
   </modal>
 
-  <modalTag :currentPoi="currentPoi" :tags="tags" v-if="showModalTag" @close="showModalTag = false">
+  <modalTag :currentPoi="currentPoi" :tags="tags" v-if="showModalTag" @close="showModalTag = false" tabindex="1">
     <div slot="t-header">Aggiungi tag per {{currentPoi.properties.nome}}</div>
     <div slot="t-body">
       <ul class="tagList">
@@ -18,27 +18,27 @@
           {{tag.name}}&nbsp;<i class="material-icons">{{tag.icon}}</i>
         </li>
       </ul>
-      <button @click="updateTags()" @keyup.enter="updateTags()" tabindex="2">Conferma</button>
+      <button @click="updateTags()" @keyup.enter="updateTags()" tabindex="1">Conferma</button>
     </div>
   </modalTag>
 
   <div id="container">
     <div id="map"></div>
   <div id="tabContainer" role="navigation">
-    <button id="showList" v-bind:class="[poiTab ? 'selected' : '', 'tab']" v-on:click="showList" tabindex="1">Punti di interesse</button>
-    <button id="showInst" v-bind:class="[!poiTab ? 'selected' : '', 'tab']" v-on:click="showInst" tabindex="2">Indicazioni </button>
+    <button id="showList" v-bind:class="[poiTab ? 'selected' : '', 'tab']" v-on:click="showList" tabindex="2">Punti di interesse</button>
+    <button id="showInst" v-bind:class="[!poiTab ? 'selected' : '', 'tab']" v-on:click="showInst" tabindex="3">Indicazioni </button>
   </div>
     <div id="list"> 
       <ul>
-      <li class="poiItem" v-for="(item, index) in poilist.list" tabindex="3">
-        <div role="button" @click="showDetails(item)" @keyup.enter="showDetails(item)" tabindex="3">{{item.properties.nome}} </div>
-        <button class="addTag" @click="openModalTag(item, index)" @keyup.enter="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="3">
+      <li class="poiItem" v-for="(item, index) in poilist.list" tabindex="4">
+        <div role="button" @click="showDetails(item)" @keyup.enter="showDetails(item)" tabindex="4">{{item.properties.nome}} </div>
+        <button class="addTag" @click="openModalTag(item, index)" @keyup.enter="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="4">
           Aggiungi tag
         </button>
-        <button v-bind:id="['like-btn' + index]" v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'thumbs']" @click="addLike(index, item, true)" tabindex="3">
+        <button v-bind:id="['like-btn' + index]" v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'thumbs']" @click="addLike(index, item, true)" tabindex="4">
           <i class="material-icons" >thumb_up</i>
         </button>
-        <button v-bind:id="['dislike-btn' + index]" v-bind:class="[item.liked == -1 ? 'selected-dislike' : '', 'thumbs']" @click="addLike(index, item, false)" tabindex="3">
+        <button v-bind:id="['dislike-btn' + index]" v-bind:class="[item.liked == -1 ? 'selected-dislike' : '', 'thumbs']" @click="addLike(index, item, false)" tabindex="4">
           <i class="material-icons" >thumb_down</i>
         </button>       
         &nbsp; Punteggio: <b>{{item.popularity}}</b>
@@ -88,7 +88,7 @@
         <div class="modal-container">
         <div class="modal-footer">
             <slot name="t-footer">
-              <button class="modal-default-button" @click="$emit('close')">
+              <button class="modal-default-button" @click="$emit('close')" tabindex="1">
                 <i class="material-icons" style="color: black">close</i>
               </button>
             </slot>
