@@ -37,7 +37,8 @@
         </div>
 
         <div class="cta-buttons-container" v-if="(city_selected != '' || city_with_gps != '') && category_selected" role="navigation">
-          <div  @click="searchPOI('/map')" class="cta-button cta-1" tabindex="6">
+          <div role="button" @click="searchPOI('/map')" @keyup.enter="searchPOI('/map')" class="cta-button cta-1" tabindex="6">
+
             <i class="material-icons">search</i> Vai alla mappa
           </div>
           <div role="button" @click="searchPOI('/search/manual')" @keyup.enter="searchPOI('/search/manual')" class="cta-button cta-2" tabindex="7">

@@ -14,11 +14,11 @@
     <div slot="t-header">Aggiungi tag per {{currentPoi.properties.nome}}</div>
     <div slot="t-body">
       <ul class="tagList">
-        <li v-for="tag in tags.list" @click="selectTag(tag)" v-bind:class="[tag.selected ? 'selected-tag' : '', 'tag-button']" tabindex="0">
+        <li v-for="tag in tags.list" @click="selectTag(tag)" @keyup.enter="selectTag(tag)" v-bind:class="[tag.selected ? 'selected-tag' : '', 'tag-button']" tabindex="1">
           {{tag.name}}&nbsp;<i class="material-icons">{{tag.icon}}</i>
         </li>
       </ul>
-      <button @click="updateTags()" tabindex="2">Conferma</button>
+      <button @click="updateTags()" @keyup.enter="updateTags()" tabindex="2">Conferma</button>
     </div>
   </modalTag>
 
@@ -31,8 +31,8 @@
     <div id="list"> 
       <ul>
       <li class="poiItem" v-for="(item, index) in poilist.list" tabindex="3">
-        <p @click="showDetails(item)">{{item.properties.nome}} </p>
-        <button class="addTag" @click="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="3">
+        <div role="button" @click="showDetails(item)" @keyup.enter="showDetails(item)" tabindex="3">{{item.properties.nome}} </div>
+        <button class="addTag" @click="openModalTag(item, index)" @keyup.enter="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="3">
           Aggiungi tag
         </button>
         <button v-bind:id="['like-btn' + index]" v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'thumbs']" @click="addLike(index, item, true)" tabindex="3">
