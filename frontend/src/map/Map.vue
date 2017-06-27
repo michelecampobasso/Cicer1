@@ -14,7 +14,7 @@
     <div slot="t-header">Aggiungi tag per {{currentPoi.properties.nome}}</div>
     <div slot="t-body">
       <ul class="tagList">
-        <li v-for="tag in tags.list" @click="selectTag(tag)" v-bind:class="[tag.selected ? 'selected-tag' : '', 'tag-button']" tabindex="1">
+        <li v-for="tag in tags.list" @click="selectTag(tag)" v-bind:class="[tag.selected ? 'selected-tag' : '', 'tag-button']" tabindex="0">
           {{tag.name}}&nbsp;<i class="material-icons">{{tag.icon}}</i>
         </li>
       </ul>
@@ -151,7 +151,7 @@ export default {
       var markerAs = new google.maps.Marker({
           position: firstPoint,
           map: map,
-          label: 'ðŸ‘¤'
+          label: '👤'
       });
       start = 0
     }
