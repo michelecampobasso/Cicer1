@@ -44,7 +44,7 @@ export default {
   methods: {
     addFields: function() {
       for (var i = 0; i < this.pois_temp.length; i++) {
-        this.pois_temp[i].is_selected = true
+        this.pois_temp[i].is_selected = false
         this.pois_temp[i].id_cicer1 = i
       }
       this.pois = JSON.parse(JSON.stringify(this.pois_temp))

@@ -32,16 +32,16 @@
       <ul>
       <li class="poiItem" v-for="(item, index) in poilist.list" tabindex="3">
         <p @click="showDetails(item)">{{item.properties.nome}} </p>
-        <button v-bind:id="['like-btn' + index]" @click="addLike(index, item, true)" tabindex="3">
-          <i v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'material-icons']" >thumb_up</i>️
-        </button>
-        <button v-bind:id="['dislike-btn' + index]" @click="addLike(index, item, false)" tabindex="3">
-          <i  v-bind:class="[item.liked == -1 ? 'selected-dislike' : '', 'material-icons']" >thumb_down</i>️
-        </button>
-        &nbsp; Punteggio: <b>{{item.popularity}}</b>
-        <button @click="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="3">
+        <button class="addTag" @click="openModalTag(item, index)" style="text-transform: uppercase; margin: 10px; font-size: 12px" tabindex="3">
           Aggiungi tag
         </button>
+        <button v-bind:id="['like-btn' + index]" v-bind:class="[item.liked == 1 ? 'selected-like' : '', 'thumbs']" @click="addLike(index, item, true)" tabindex="3">
+          <i class="material-icons" >thumb_up</i>
+        </button>
+        <button v-bind:id="['dislike-btn' + index]" v-bind:class="[item.liked == -1 ? 'selected-dislike' : '', 'thumbs']" @click="addLike(index, item, false)" tabindex="3">
+          <i class="material-icons" >thumb_down</i>
+        </button>       
+        &nbsp; Punteggio: <b>{{item.popularity}}</b>
       </li>   
       </ul>
     </div>
@@ -151,7 +151,7 @@ export default {
       var markerAs = new google.maps.Marker({
           position: firstPoint,
           map: map,
-          label: '👤'
+          label: 'ðŸ‘¤'
       });
       start = 0
     }

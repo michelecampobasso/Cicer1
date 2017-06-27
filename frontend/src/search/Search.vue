@@ -1,6 +1,6 @@
     <template>
       <div id="search" role="main">
-        <div v-bind:class="[use_gps ? 'selected' : '', 'gps']" @click="fetchGeolocation()" tabindex="1">
+        <div role="button" v-bind:class="[use_gps ? 'selected' : '', 'gps']" @click="fetchGeolocation()" @keyup.enter="fetchGeolocation()" tabindex="1">
              <i class="material-icons">{{gps_icon}}</i> {{ location_msg }}
         </div>
         
@@ -11,7 +11,7 @@
           </md-input-container> 
           <div class="city-suggestions">
             <ul>
-              <li v-for="city_suggestion in city_suggestions" v-bind:value="city_suggestion" @click="selectCity(city_suggestion)" tabindex="3">
+              <li role="button" v-for="city_suggestion in city_suggestions" v-bind:value="city_suggestion" @click="selectCity(city_suggestion)" @keyup.enter="selectCity(city_suggestion)" tabindex="3">
                 {{ city_suggestion }}
               </li>
             </ul>
@@ -22,7 +22,7 @@
           <span class="section_title">Quanto tempo hai a disposizione?</span>
           <div class="length-container">
             <div v-for="duration in durations">
-              <div v-bind:class="[duration.is_selected ? 'selected' : '', 'length']" @click="selectTripLength(duration)" tabindex="4">
+              <div role="button" v-bind:class="[duration.is_selected ? 'selected' : '', 'length']" @click="selectTripLength(duration)" @keyup.enter="selectTripLength(duration)" tabindex="4">
                 {{duration.string}}
               </div>
             </div>
@@ -31,7 +31,7 @@
 
         <div class="category-container">
           <span class="section_title">Cosa ti interessa di più?</span>
-          <div v-for="category in categories" v-bind:class="[category.is_selected ? 'selected' : '', 'category']" @click="selectCategory(category.cat_id)" tabindex="5">
+          <div role="button" v-for="category in categories" v-bind:class="[category.is_selected ? 'selected' : '', 'category']" @click="selectCategory(category.cat_id)" @keyup.enter="selectCategory(category.cat_id)" tabindex="5">
               {{category.cat_string_short}} {{category.cat_emoji}} 
           </div>
         </div>
@@ -40,7 +40,7 @@
           <div  @click="searchPOI('/map')" class="cta-button cta-1" tabindex="6">
             <i class="material-icons">search</i> Vai alla mappa
           </div>
-          <div @click="searchPOI('/search/manual')" class="cta-button cta-2" tabindex="7">
+          <div role="button" @click="searchPOI('/search/manual')" @keyup.enter="searchPOI('/search/manual')" class="cta-button cta-2" tabindex="7">
             <i class="material-icons">filter_list</i> Filtra a mano
           </div>
         </div>
